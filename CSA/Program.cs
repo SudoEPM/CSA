@@ -1,62 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
+using CSA.ProxyTree;
+using CSA.ProxyTree.Nodes;
+using CSA.ProxyTree.Visitors;
+using CSA.RoslynWalkers;
+using Microsoft.CodeAnalysis.MSBuild;
+using Ninject;
 
 namespace CSA
-{
-    public static class SyntaxTreeExtensions
-    {
-        public static void Dump(this SyntaxTree tree)
-        {
-            var writer = new ConsoleDumpWalker();
-            writer.Visit(tree.GetRoot());
-        }
-
-        class ConsoleDumpWalker : SyntaxWalker
-        {
-            public override void Visit(SyntaxNode node)
-            {
-                int padding = node.Ancestors().Count();
-                //To identify leaf nodes vs nodes with children
-                string prepend = node.ChildNodes().Any() ? "[-]" : "[.]";
-                //Get the type of the node
-                string line = new String(' ', padding) + prepend +
-                                        " " + node.GetType().ToString();
-                //Write the line
-                System.Console.WriteLine(line);
-                base.Visit(node);
-            }
-
-        }
-    }
-
+{   
     internal class Program
     {
+        public static IKernel Kernel { get; private set; }
         private static void Main(string[] args)
         {
+            Kernel = new StandardKernel(new CSAModule());
 
-            const string code = @"class SimpleClass { 
-                                public void SimpleMethod()
-                                    {
-                                        var list = new List<int>();
-                                        list.Add(20);
-                                        list.Add(40);
-                                        var result = from item in list
-                                                     where item > 20
-                                                     select item;
-                                    }
-                        }";
+            string filepath = @"C:\Dev\Radarr\src\NzbDrone.sln";
+            //string filepath = @"C:\Dev\CSA\CSA.sln";
+            var forest = ParseForest(filepath);
+            Console.WriteLine("Parsing Completed");
+            var visitor = Kernel.Get<IProxyVisitor>();
+            visitor.Visit(forest);
+            Console.WriteLine("Mission Completed");
+            Console.ReadKey();
+        }
 
-
-            //Parsing the syntax tree
-            var tree = CSharpSyntaxTree.ParseText(code);
-
-            //Dumping the syntax tree
-            tree.Dump();
+        private static List<SyntaxProxyNode> ParseForest(string filepath)
+        {
+            var workspace = MSBuildWorkspace.Create();
+            var sol = workspace.OpenSolutionAsync(filepath).Result;
+            return (from proj in sol.Projects from doc in proj.Documents select doc.GetSyntaxTreeAsync().Result.GenerateProxy()).ToList();
         }
     }
 
