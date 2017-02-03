@@ -1,14 +1,16 @@
 ﻿using System.Collections.Generic;
 using CSA.ProxyTree.Nodes;
+using CSA.ProxyTree.Iterators;
 
 namespace CSA.ProxyTree.Algorithms
 {
-    interface IProxyAlgorithm
+    public interface IProxyAlgorithm
     {
-        void Begin();
-        void End();
+        IProxyIterator Iterator { get; }
 
-        void Accept(IProxyNode node);
-        void Accept(MethodProxyNode node);
+        void Apply(IProxyNode node);
+        void Apply(ForestNode node);
+        void Apply(MethodNode node);
+        void Apply(PropertyNode node);
     }
 }

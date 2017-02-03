@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using CSA.ProxyTree.Nodes;
 
-namespace CSA.ProxyTree.Visitors
+namespace CSA.ProxyTree.Iterators
 {
-    interface IProxyVisitor
+    public interface IProxyIterator
     {
         IEnumerable<IProxyNode> GetEnumerable();
     }

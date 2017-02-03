@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using CSA.ProxyTree.Algorithms;
 using CSA.ProxyTree.Nodes;
-using CSA.ProxyTree.Visitors;
+using CSA.ProxyTree.Iterators;
 using CSA.RoslynWalkers;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 using Ninject;
 
@@ -25,34 +26,41 @@ namespace CSA
             }
             // Prepare the injection container
             Kernel = new StandardKernel(new CSAModule(options));
+            Kernel.Bind<ProgramOptions>().ToMethod(x => options);
 
             // Parse the solution
-            var forest = ParseForest(options.Solution);
-            Kernel.Bind<List<IProxyNode>>().ToMethod(x => forest);
+            var forest = ParseForest(options.TestMode ? options.DebugSolution : options.Solution);
+            Kernel.Bind<IProxyNode>().ToMethod(x => forest).Named("Root");
             Console.WriteLine("Parsing Completed");
 
             // Execute the different algorithms and visits required
-            var visitors = Kernel.GetAll<IProxyVisitor>();
             var algorithms = Kernel.GetAll<IProxyAlgorithm>().ToList();
 
-            foreach (var visitor in visitors)
+            foreach (var algorithm in algorithms)
             {
-                foreach (var node in visitor.GetEnumerable())
+                foreach (var node in algorithm.Iterator.GetEnumerable())
                 {
-                    algorithms.ForEach(x => x.Accept(node));
+                    node.Accept(algorithm);
                 }
             }
-            algorithms.ForEach(x => x.End());
 
             Console.WriteLine("Mission Completed");
-            Console.ReadKey();
         }
 
-        private static List<IProxyNode> ParseForest(string filepath)
+        private static IProxyNode ParseForest(string filepath)
         {
             var workspace = MSBuildWorkspace.Create();
             var sol = workspace.OpenSolutionAsync(filepath).Result;
-            return (from proj in sol.Projects from doc in proj.Documents select doc.GetSyntaxTreeAsync().Result.GenerateProxy()).ToList();
+            var forest = new List<IProxyNode>();
+            var nbProjectsParsed = 0;
+            var projects = sol.Projects.ToList();
+            foreach (var proj in projects)
+            {
+                forest.AddRange(proj.Documents.Select(doc => doc.GetSyntaxTreeAsync().Result.GenerateProxy()));
+                nbProjectsParsed++;
+                Console.WriteLine(nbProjectsParsed + "/" + projects.Count + " projects have been analyzed!");
+            }
+            return new ForestNode(forest);
         }
     }
 

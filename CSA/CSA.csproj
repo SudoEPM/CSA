@@ -114,12 +114,17 @@
   <ItemGroup>
     <Compile Include="CSAModule.cs" />
     <Compile Include="ProgramOptions.cs" />
+    <Compile Include="ProxyTree\Algorithms\PrintTreeAlgorithm.cs" />
+    <Compile Include="ProxyTree\Iterators\IProxyIterator.cs" />
+    <Compile Include="ProxyTree\Iterators\PostOrderDepthFirstProxyIterator.cs" />
+    <Compile Include="ProxyTree\Iterators\PreOrderDepthFirstProxyIterator.cs" />
+    <Compile Include="ProxyTree\Nodes\ClassNode.cs" />
+    <Compile Include="ProxyTree\Nodes\ForestNode.cs" />
     <Compile Include="ProxyTree\Nodes\IProxyNode.cs" />
-    <Compile Include="ProxyTree\Nodes\MethodProxyNode.cs" />
-    <Compile Include="ProxyTree\Visitors\DFSProxyVisitor.cs" />
+    <Compile Include="ProxyTree\Nodes\MethodNode.cs" />
     <Compile Include="ProxyTree\Algorithms\IProxyAlgorithm.cs" />
-    <Compile Include="ProxyTree\Visitors\IProxyVisitor.cs" />
     <Compile Include="ProxyTree\Algorithms\MetricCalculatorAlgorithm.cs" />
+    <Compile Include="ProxyTree\Nodes\PropertyNode.cs" />
     <Compile Include="RoslynWalkers\ConsoleDumpWalker.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

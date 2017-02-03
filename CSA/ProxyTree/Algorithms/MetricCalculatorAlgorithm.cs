@@ -1,61 +1,92 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using CSA.ProxyTree.Nodes;
-using Microsoft.CodeAnalysis;
+using CSA.ProxyTree.Iterators;
 using Microsoft.CodeAnalysis.CSharp;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Ninject;
 
 namespace CSA.ProxyTree.Algorithms
 {
     class MetricCalculatorAlgorithm : IProxyAlgorithm
     {
+        private readonly TextWriter _output;
+        private readonly LinkedList<JObject> _results;
+        private dynamic _current = null;
+
         private int _nbNodes = 0;
-        private int _nbConditionnals = 0;
         private int _nbFiles = 0;
-        private int _nbQueries = 0;
-        private int _nbLambdas = 0;
+        private int _nbClass = 0;
 
-        private readonly List<SyntaxNode> _forest;
-
-        public MetricCalculatorAlgorithm(List<SyntaxNode> forest)
+        public MetricCalculatorAlgorithm([Named("PostOrder")] IProxyIterator iterator, [Named("Metric")] TextWriter output, LinkedList<JObject> results)
         {
-            _forest = forest;
+            _output = output;
+
+            _results = results;
+            _results.Clear();
+
+            Iterator = iterator;
         }
 
-        public void Begin()
-        {
-        }
+        public IProxyIterator Iterator { get; }
 
-        public void End()
+        public void Apply(IProxyNode node)
         {
-            _nbFiles = _forest.Count;
+            if (_current == null)
+            {
+                _current = new JObject();
+                _current.NbConditionnals = 0;
+                _current.NbLocalVars = 0;
+                _current.NbLoops = 0;
+                _current.NbQueries = 0;
+                _current.NbLambdas = 0;
+                _current.NbBreaks = 0;
+            }
 
-            Console.WriteLine(" Metrics results: ");
-            Console.WriteLine("Nb. files: " + _nbFiles);
-            Console.WriteLine("Nb. nodes: " + _nbNodes);
-            Console.WriteLine("Nb. conditionnal nodes: " + _nbConditionnals);
-            Console.WriteLine("Nb. queries nodes: " + _nbQueries);
-            Console.WriteLine("Nb. lambdas nodes: " + _nbLambdas);
-        }
-
-        public void Accept(IProxyNode node)
-        {
             ++_nbNodes;
 
             switch (node.Kind)
             {
-                // Conditionnals
                 case SyntaxKind.IfStatement:
                 case SyntaxKind.SwitchStatement:
-                    _nbConditionnals++;
+                    _current.NbConditionnals += 1;
+                    break;
+
+                case SyntaxKind.WhileStatement:
+                case SyntaxKind.DoStatement:
+                case SyntaxKind.ForEachStatement:
+                case SyntaxKind.ForStatement:
+                    _current.NbLoops += 1;
                     break;
 
                 case SyntaxKind.QueryExpression:
-                    _nbQueries++;
+                    _current.NbQueries += 1;
+                    break;
+
+                case SyntaxKind.ClassDeclaration:
+                    _nbClass++;
                     break;
 
                 case SyntaxKind.SimpleLambdaExpression:
                 case SyntaxKind.ParenthesizedLambdaExpression:
-                    _nbLambdas++;
+                    _current.NbLambdas += 1;
+                    break;
+
+                case SyntaxKind.LocalDeclarationStatement:
+                    _current.NbLocalVars += 1;
+                    break;
+
+                case SyntaxKind.BreakStatement:
+                case SyntaxKind.ContinueStatement:
+                case SyntaxKind.GotoStatement:
+                case SyntaxKind.GotoCaseStatement:
+                case SyntaxKind.GotoDefaultStatement:
+                case SyntaxKind.YieldBreakStatement:
+                case SyntaxKind.YieldReturnStatement:
+                case SyntaxKind.ReturnStatement:
+                    _current.NbBreaks += 1;
                     break;
 
                 default:
@@ -63,9 +94,39 @@ namespace CSA.ProxyTree.Algorithms
             }
         }
 
-        public void Accept(MethodProxyNode node)
+        public void Apply(ForestNode node)
         {
+            _nbFiles = node.Childs.Count;
 
+            dynamic general = new JObject();
+            general.Name = "Generic Metrics";
+            general.NbFiles = _nbFiles;
+            general.NbClass = _nbClass;
+            general.NbNodes = _nbNodes;
+            _results.AddFirst(general);
+
+            var res = JsonConvert.SerializeObject(_results, Formatting.Indented);
+            _output.WriteLine(res);
+            _output.Flush();
+        }
+
+        public void Apply(MethodNode node)
+        {
+            // It's empty, just forget it
+            if (_current == null)
+                return;
+
+            _current.MethodName = node.Signature;
+            _current.ClassName = node.ClassSignature;
+            _current.FileName = node.FileName;
+
+            _results.AddLast(_current);
+            _current = null;
+        }
+
+        public void Apply(PropertyNode node)
+        {
+            Apply(node as IProxyNode);
         }
     }
 }

@@ -1,22 +1,24 @@
 ﻿using System.Collections.Generic;
-using CSA.ProxyTree.Algorithms;
+using System.Linq;
 using CSA.ProxyTree.Nodes;
+using Ninject;
 
-namespace CSA.ProxyTree.Visitors
+namespace CSA.ProxyTree.Iterators
 {
-    class DFSProxyVisitor : IProxyVisitor
+    class PreOrderDepthFirstProxyIterator : IProxyIterator
     {
         private readonly Stack<IProxyNode> _stack;
 
-        public DFSProxyVisitor(Stack<IProxyNode> stack, List<IProxyNode> forest)
+        public PreOrderDepthFirstProxyIterator(Stack<IProxyNode> stack, [Named("Root")] IProxyNode forest)
         {
             _stack = stack;
-            forest.ForEach(x => _stack.Push(x));
+            _stack.Clear(); // Just to be sure that ninject didn't do something fishy
+            _stack.Push(forest);
         }
 
         public IEnumerable<IProxyNode> GetEnumerable()
         {
-            while (_stack.Count > 0)
+            while (_stack.Any())
             {
                 // Find the current element
                 var current = _stack.Pop();

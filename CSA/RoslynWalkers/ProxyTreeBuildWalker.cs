@@ -4,7 +4,6 @@ using System.Linq;
 using CSA.ProxyTree.Nodes;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Ninject;
 
 namespace CSA.RoslynWalkers
@@ -19,8 +18,15 @@ namespace CSA.RoslynWalkers
         public ProxyTreeBuildWalker(Dictionary<SyntaxKind, Type> mapTypes)
         {
             _mapTypes = mapTypes;
-            _mapTypes[SyntaxKind.MethodDeclaration] = typeof(MethodProxyNode);
-            _mapTypes[SyntaxKind.ConstructorDeclaration] = typeof(MethodProxyNode);
+            _mapTypes[SyntaxKind.MethodDeclaration] = typeof(MethodNode);
+            _mapTypes[SyntaxKind.ConstructorDeclaration] = typeof(MethodNode);
+            _mapTypes[SyntaxKind.GetAccessorDeclaration] = typeof(MethodNode);
+            _mapTypes[SyntaxKind.SetAccessorDeclaration] = typeof(MethodNode);
+            _mapTypes[SyntaxKind.PropertyDeclaration] = typeof(PropertyNode);
+            _mapTypes[SyntaxKind.IndexerDeclaration] = typeof(PropertyNode);
+            _mapTypes[SyntaxKind.ClassDeclaration] = typeof(ClassNode);
+            _mapTypes[SyntaxKind.StructDeclaration] = typeof(ClassNode);
+            _mapTypes[SyntaxKind.InterfaceDeclaration] = typeof(ClassNode);
 
             var interfaceType = typeof(IProxyNode).Name;
             foreach (var type in _mapTypes)
@@ -48,6 +54,13 @@ namespace CSA.RoslynWalkers
                 var parent = _mapNodesConversion[node.Parent];
                 curr.Parent = parent;
                 parent.Childs.Add(curr);
+
+                if (curr.Parent.Childs.Any())
+                {
+                    var leftBrother = curr.Parent.Childs.Last();
+                    leftBrother.Right = curr;
+                    curr.Left = leftBrother;
+                }
             }
 
             _mapNodesConversion[node] = curr; 

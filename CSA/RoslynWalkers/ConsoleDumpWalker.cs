@@ -12,10 +12,10 @@ namespace CSA.RoslynWalkers
             //To identify leaf nodes vs nodes with children
             string prepend = node.ChildNodes().Any() ? "[-]" : "[.]";
             //Get the type of the node
-            string line = new String(' ', padding) + prepend +
-                          " " + node.GetType().ToString();
+            string line = new String(' ', padding) + prepend + " " + node.GetType();
+
             //Write the line
-            System.Console.WriteLine(line);
+            Console.WriteLine(line);
             base.Visit(node);
         }
 
