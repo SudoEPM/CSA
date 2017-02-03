@@ -4,19 +4,19 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace CSA.ProxyTree.Nodes
 {
-    public class SyntaxProxyNode
+    public class BasicProxyNode : IProxyNode
     {
         private readonly SyntaxNode _origin;
 
-        public SyntaxProxyNode Parent { get; set; }
-        public List<SyntaxProxyNode> Childs { get; }
+        public IProxyNode Parent { get; set; }
+        public List<IProxyNode> Childs { get; }
 
         public SyntaxKind Kind => _origin.Kind();
 
-        public SyntaxProxyNode(SyntaxNode origin)
+        public BasicProxyNode(SyntaxNode origin)
         {
             _origin = origin;
-            Childs = new List<SyntaxProxyNode>();
+            Childs = new List<IProxyNode>();
         }
     }
 }

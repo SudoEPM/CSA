@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using CSA.ProxyTree.Nodes;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
 namespace CSA.ProxyTree.Algorithms
@@ -13,13 +14,21 @@ namespace CSA.ProxyTree.Algorithms
         private int _nbQueries = 0;
         private int _nbLambdas = 0;
 
-        public void Begin(List<SyntaxProxyNode> forest)
+        private readonly List<SyntaxNode> _forest;
+
+        public MetricCalculatorAlgorithm(List<SyntaxNode> forest)
         {
-            _nbFiles = forest.Count;
+            _forest = forest;
+        }
+
+        public void Begin()
+        {
         }
 
         public void End()
         {
+            _nbFiles = _forest.Count;
+
             Console.WriteLine(" Metrics results: ");
             Console.WriteLine("Nb. files: " + _nbFiles);
             Console.WriteLine("Nb. nodes: " + _nbNodes);
@@ -28,7 +37,7 @@ namespace CSA.ProxyTree.Algorithms
             Console.WriteLine("Nb. lambdas nodes: " + _nbLambdas);
         }
 
-        public void Accept(SyntaxProxyNode node)
+        public void Accept(IProxyNode node)
         {
             ++_nbNodes;
 
@@ -52,6 +61,11 @@ namespace CSA.ProxyTree.Algorithms
                 default:
                     break;
             }
+        }
+
+        public void Accept(MethodProxyNode node)
+        {
+
         }
     }
 }

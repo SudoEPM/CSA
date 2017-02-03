@@ -13,11 +13,19 @@ namespace CSA
 {
     class CSAModule : NinjectModule
     {
+        private readonly ProgramOptions _options;
+
+        public CSAModule(ProgramOptions options)
+        {
+            _options = options;
+        }
+
         public override void Load()
         {
             // Binding for calculating metrics
             Bind<IProxyVisitor>().To<DFSProxyVisitor>();
-            Bind<IProxyAlgorithm>().To<MetricCalculatorAlgorithm>();
+
+            if (_options.ComputeMetrics) Bind<IProxyAlgorithm>().To<MetricCalculatorAlgorithm>();
         }
     }
 }

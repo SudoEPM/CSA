@@ -1,6 +1,6 @@
-using CSA.ProxyTree;
 using CSA.ProxyTree.Nodes;
 using Microsoft.CodeAnalysis;
+using Ninject;
 
 namespace CSA.RoslynWalkers
 {
@@ -8,13 +8,13 @@ namespace CSA.RoslynWalkers
     {
         public static void Dump(this SyntaxTree tree)
         {
-            var writer = new ConsoleDumpWalker();
+            var writer = Program.Kernel.Get<ConsoleDumpWalker>();
             writer.Visit(tree.GetRoot());
         }
 
-        public static SyntaxProxyNode GenerateProxy(this SyntaxTree tree)
+        public static IProxyNode GenerateProxy(this SyntaxTree tree)
         {
-            var writer = new ProxyTreeBuildWalker();
+            var writer = Program.Kernel.Get<ProxyTreeBuildWalker>();
             writer.Visit(tree.GetRoot());
             return writer.Root;
         }

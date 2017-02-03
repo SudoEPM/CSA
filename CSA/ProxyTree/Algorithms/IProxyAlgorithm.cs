@@ -5,9 +5,10 @@ namespace CSA.ProxyTree.Algorithms
 {
     interface IProxyAlgorithm
     {
-        void Begin(List<SyntaxProxyNode> forest);
+        void Begin();
         void End();
 
-        void Accept(SyntaxProxyNode node);
+        void Accept(IProxyNode node);
+        void Accept(MethodProxyNode node);
     }
 }

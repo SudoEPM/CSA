@@ -5,7 +5,6 @@ namespace CSA.ProxyTree.Visitors
 {
     interface IProxyVisitor
     {
-        void Visit(List<SyntaxProxyNode> forest);
-        void Visit(SyntaxProxyNode node);
+        IEnumerable<IProxyNode> GetEnumerable();
     }
 }
