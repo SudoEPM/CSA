@@ -39,15 +39,6 @@ namespace CSA.ProxyTree.Nodes
 
         public virtual void Accept(IProxyAlgorithm algorithm) => algorithm.Apply(this);
 
-        public string ClassSignature
-        {
-            get
-            {
-                var classDeclaration = Ancestors().First(x => x is ClassNode) as ClassNode;
-
-                Debug.Assert(classDeclaration != null, "classDeclaration != null");
-                return classDeclaration.Signature;
-            }
-        }
+        public string ClassSignature { get; set; }
     }
 }

@@ -94,6 +94,11 @@ namespace CSA.ProxyTree.Algorithms
             }
         }
 
+        public void Apply(ClassNode node)
+        {
+            Apply(node as IProxyNode);
+        }
+
         public void Apply(ForestNode node)
         {
             _nbFiles = node.Childs.Count;
@@ -127,6 +132,20 @@ namespace CSA.ProxyTree.Algorithms
         public void Apply(PropertyNode node)
         {
             Apply(node as IProxyNode);
+        }
+
+        public void Apply(PropertyAccessorNode node)
+        {
+            // It's empty, just forget it
+            if (_current == null)
+                return;
+
+            _current.MethodName = node.Signature;
+            _current.ClassName = node.ClassSignature;
+            _current.FileName = node.FileName;
+
+            _results.AddLast(_current);
+            _current = null;
         }
     }
 }

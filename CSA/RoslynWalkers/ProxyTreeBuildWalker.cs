@@ -20,8 +20,8 @@ namespace CSA.RoslynWalkers
             _mapTypes = mapTypes;
             _mapTypes[SyntaxKind.MethodDeclaration] = typeof(MethodNode);
             _mapTypes[SyntaxKind.ConstructorDeclaration] = typeof(MethodNode);
-            _mapTypes[SyntaxKind.GetAccessorDeclaration] = typeof(MethodNode);
-            _mapTypes[SyntaxKind.SetAccessorDeclaration] = typeof(MethodNode);
+            _mapTypes[SyntaxKind.GetAccessorDeclaration] = typeof(PropertyAccessorNode);
+            _mapTypes[SyntaxKind.SetAccessorDeclaration] = typeof(PropertyAccessorNode);
             _mapTypes[SyntaxKind.PropertyDeclaration] = typeof(PropertyNode);
             _mapTypes[SyntaxKind.IndexerDeclaration] = typeof(PropertyNode);
             _mapTypes[SyntaxKind.ClassDeclaration] = typeof(ClassNode);

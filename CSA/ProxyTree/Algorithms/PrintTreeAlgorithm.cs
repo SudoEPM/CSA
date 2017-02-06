@@ -28,6 +28,11 @@ namespace CSA.ProxyTree.Algorithms
             _output.WriteLine(line);
         }
 
+        public void Apply(ClassNode node)
+        {
+            Apply(node as IProxyNode);
+        }
+
         public void Apply(ForestNode node)
         {
             _output.WriteLine("Root");
@@ -39,6 +44,11 @@ namespace CSA.ProxyTree.Algorithms
         }
 
         public void Apply(PropertyNode node)
+        {
+            Apply(node as IProxyNode);
+        }
+
+        public void Apply(PropertyAccessorNode node)
         {
             Apply(node as IProxyNode);
         }

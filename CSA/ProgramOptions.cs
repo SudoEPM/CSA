@@ -17,9 +17,17 @@ namespace CSA
             HelpText = "Is the project in test mode (use debug solution).")]
         public bool TestMode { get; set; }
 
-        [Option('m', "metrics", DefaultValue = true,
+        [Option('m', "metrics", DefaultValue = false,
             HelpText = "Compute the metrics of the solution.")]
         public bool ComputeMetrics { get; set; }
+
+        [Option('u', "uml", DefaultValue = true,
+            HelpText = "Generate the UML of the solution.")]
+        public bool GenerateUml { get; set; }
+
+        [Option('g', "graphviz-path", DefaultValue = "C:/Program Files (x86)/Graphviz2.38/bin",
+            HelpText = "Path of Graphviz, you need it if you want to generate UML.")]
+        public string GraphVizPath { get; set; }
 
         [ParserState]
         public IParserState LastParserState { get; set; }

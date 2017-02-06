@@ -13,6 +13,7 @@ namespace CSA.ProxyTree.Nodes
         IProxyNode Parent { get; set; }
         IProxyNode Left { get; set; }
         IProxyNode Right { get; set; }
+
         string ClassSignature { get; }
         string FileName { get; }
 

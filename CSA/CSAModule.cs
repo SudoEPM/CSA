@@ -12,11 +12,11 @@ using Ninject.Modules;
 
 namespace CSA
 {
-    class CSAModule : NinjectModule
+    class CsaModule : NinjectModule
     {
         private readonly ProgramOptions _options;
 
-        public CSAModule(ProgramOptions options)
+        public CsaModule(ProgramOptions options)
         {
             _options = options;
         }
@@ -27,14 +27,17 @@ namespace CSA
             Bind<IProxyIterator>().To<PostOrderDepthFirstProxyIterator>().Named("PostOrder");
             Bind<IProxyIterator>().To<PreOrderDepthFirstProxyIterator>().Named("PreOrder");
 
-            Bind<IProxyAlgorithm>().To<PrintTreeAlgorithm>();
+            //Bind<IProxyAlgorithm>().To<PrintTreeAlgorithm>();
+            if (_options.ComputeMetrics) Bind<IProxyAlgorithm>().To<InitTreeAlgorithm>();
             if (_options.ComputeMetrics) Bind<IProxyAlgorithm>().To<MetricCalculatorAlgorithm>();
+            if (_options.GenerateUml) Bind<IProxyAlgorithm>().To<UmlGeneratorAlgorithm>();
 
             //Bind<TextWriter>().ToConstant(Console.Out).Named("Generic");
             Bind<TextWriter>().ToConstant(new StreamWriter("generic.txt")).Named("Generic");
 
             //Bind<TextWriter>().ToConstant(Console.Out).Named("Metric");
-            Bind<TextWriter>().ToConstant(new StreamWriter("metric.json")).Named("Metric");
+            if (_options.ComputeMetrics) Bind<TextWriter>().ToConstant(new StreamWriter("metric.json")).Named("Metric");
+            if (_options.GenerateUml) Bind<FileStream>().ToConstant(new FileStream("uml.png", FileMode.Create)).Named("UML");
 
         }
     }

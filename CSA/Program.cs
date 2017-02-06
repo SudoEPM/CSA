@@ -25,7 +25,7 @@ namespace CSA
                 return;
             }
             // Prepare the injection container
-            Kernel = new StandardKernel(new CSAModule(options));
+            Kernel = new StandardKernel(new CsaModule(options));
             Kernel.Bind<ProgramOptions>().ToMethod(x => options);
 
             // Parse the solution

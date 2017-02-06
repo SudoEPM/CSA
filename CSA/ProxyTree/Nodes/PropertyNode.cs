@@ -12,6 +12,9 @@ namespace CSA.ProxyTree.Nodes
     {
         public PropertyNode(SyntaxNode origin) : base(origin)
         {
+            var baseOrigin = origin as BasePropertyDeclarationSyntax;
+            Debug.Assert(baseOrigin != null, "baseOrigin != null");
+            Protection = FindProtection(baseOrigin.Modifiers);
         }
 
         public override void Accept(IProxyAlgorithm algorithm) => algorithm.Apply(this);
@@ -37,6 +40,35 @@ namespace CSA.ProxyTree.Nodes
                 }
 
                 throw new InvalidOperationException();
+            }
+        }
+
+        public string Type
+        {
+            get
+            {
+                var origin = Origin as BasePropertyDeclarationSyntax;
+                Debug.Assert(origin != null, "origin != null");
+                return origin.Type.ToString();
+            }
+        }
+
+        public string Protection { get; }
+
+        private string FindProtection(SyntaxTokenList modifiers)
+        {
+            try
+            {
+                var modifier = modifiers.First(x =>
+                    x.Kind() == SyntaxKind.PublicKeyword ||
+                    x.Kind() == SyntaxKind.PrivateKeyword ||
+                    x.Kind() == SyntaxKind.ProtectedKeyword ||
+                    x.Kind() == SyntaxKind.InternalKeyword);
+                return modifier.ToString();
+            }
+            catch (InvalidOperationException)
+            {
+                return "private";
             }
         }
     }
