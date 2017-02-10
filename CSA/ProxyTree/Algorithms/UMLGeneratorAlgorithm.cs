@@ -1,12 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using CSA.ProxyTree.Iterators;
 using CSA.ProxyTree.Nodes;
 using DotBuilder;
 using DotBuilder.Attributes;
 using DotBuilder.Statements;
+using Microsoft.CodeAnalysis.CSharp;
 using Ninject;
 
 namespace CSA.ProxyTree.Algorithms
@@ -16,6 +17,10 @@ namespace CSA.ProxyTree.Algorithms
         private readonly FileStream _output;
         private readonly string _graphVizPath;
         private readonly GraphBase _umlGraph;
+
+        private List<string> _currentConstructors;
+        private List<string> _currentMethods;
+        private List<string> _currentProperties;
 
         public UmlGeneratorAlgorithm([Named("PostOrder")] IProxyIterator iterator, [Named("UML")] FileStream output, ProgramOptions options)
         {
@@ -36,10 +41,30 @@ namespace CSA.ProxyTree.Algorithms
 
         public void Apply(ClassNode node)
         {
-            var content = string.Join(@"\l", node.Childs.Where(x => x is MethodNode).Select(x => ToUml((MethodNode)x))) + @"\l";
+            var content = new List<string>();
+
+            var methods = new List<string>();
+            if (_currentConstructors != null)
+            {
+                methods.AddRange(_currentConstructors);
+                _currentConstructors = null;
+            }
+            if (_currentMethods != null)
+            {
+                methods.AddRange(_currentMethods);
+                _currentMethods = null;
+            }
+            if(methods.Any())
+                content.Add(string.Join(@"\l", methods) + @"\l");
+
+            if (_currentProperties != null)
+            {
+                content.Add(string.Join(@"\l", _currentProperties) + @"\l");
+                _currentProperties = null;
+            }
 
             // Gen the class
-            _umlGraph.With(GNode.Name(node.Signature, content));
+            _umlGraph.With(GNode.Name(node.Signature, string.Join("|", content)));
         }
 
         public void Apply(ForestNode node)
@@ -57,21 +82,24 @@ namespace CSA.ProxyTree.Algorithms
 
         public void Apply(MethodNode node)
         {
-            Apply(node as IProxyNode);
-        }
+            List<string> current;
+            switch (node.Kind)
+            {
+                case SyntaxKind.ConstructorDeclaration:
+                    if (_currentConstructors == null)
+                        _currentConstructors = new List<string>();
+                    current = _currentConstructors;
+                    break;
+                case SyntaxKind.MethodDeclaration:
+                    if (_currentMethods == null)
+                        _currentMethods = new List<string>();
+                    current = _currentMethods;
+                    break;
+                default:
+                    throw new InvalidOperationException();
+            }
+            
 
-        public void Apply(PropertyNode node)
-        {
-            Apply(node as IProxyNode);
-        }
-
-        public void Apply(PropertyAccessorNode node)
-        {
-            Apply(node as IProxyNode);
-        }
-
-        public string ToUml(MethodNode node)
-        {
             var line = "";
             switch (node.Protection)
             {
@@ -88,11 +116,45 @@ namespace CSA.ProxyTree.Algorithms
                     line += "~ ";
                     break;
             }
-            line += node.Name;
-            var test = node.Parameters;
-            var args = node.Parameters.Substring(1, node.Parameters.Length - 2).Split(',');
+            line += $"{node.Name}({string.Join(", ", node.Parameters.Select(x => x.Item1))})";
+            if (node.ReturnType != "")
+            {
+                line += $" : {node.ReturnType}";
+            }
+            current.Add(line);
+        }
 
-            return line;
+        public void Apply(PropertyNode node)
+        {
+            Apply(node as IProxyNode);
+        }
+
+        public void Apply(PropertyAccessorNode node)
+        {
+            if(_currentProperties == null)
+                _currentProperties = new List<string>();
+
+            var line = "";
+            switch (node.Protection)
+            {
+                case "private":
+                    line += "- ";
+                    break;
+                case "public":
+                    line += "+ ";
+                    break;
+                case "protected":
+                    line += "# ";
+                    break;
+                case "internal":
+                    line += "~ ";
+                    break;
+            }
+
+            var ret = node.Accessor == "get" ? $" : {node.Type}" : "";
+            line += $"{node.Signature}({(node.Accessor == "set" ? node.Type : "")}){ret}";
+
+            _currentProperties.Add(line);
         }
     }
 }

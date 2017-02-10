@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using CSA.ProxyTree.Algorithms;
@@ -23,7 +24,7 @@ namespace CSA.ProxyTree.Nodes
                         var node = Origin as ConstructorDeclarationSyntax;
                         Debug.Assert(node != null, "node != null");
                         Name = node.Identifier.ToString();
-                        Parameters = node.ParameterList.ToString();
+                        Parameters = node.ParameterList.Parameters.Select(x => new Tuple<string, string>(x.Type.ToString(), x.Identifier.ToString())).ToList();
                         ReturnType = "";
                     }
                     break;
@@ -32,7 +33,7 @@ namespace CSA.ProxyTree.Nodes
                         var node = Origin as MethodDeclarationSyntax;
                         Debug.Assert(node != null, "node != null");
                         Name = node.Identifier.ToString();
-                        Parameters = node.ParameterList.ToString();
+                        Parameters = node.ParameterList.Parameters.Select(x => new Tuple<string, string>(x.Type.ToString(), x.Identifier.ToString())).ToList();
                         ReturnType = node.ReturnType.ToString();
                     }
                     break;
@@ -45,7 +46,7 @@ namespace CSA.ProxyTree.Nodes
 
         public string Name { get; }
 
-        public string Parameters { get; }
+        public List<Tuple<string, string>> Parameters { get; }
 
         public string ReturnType { get; }
         public string Protection { get; }

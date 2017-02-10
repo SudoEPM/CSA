@@ -15,33 +15,31 @@ namespace CSA.ProxyTree.Nodes
             var baseOrigin = origin as BasePropertyDeclarationSyntax;
             Debug.Assert(baseOrigin != null, "baseOrigin != null");
             Protection = FindProtection(baseOrigin.Modifiers);
+
+            switch (Kind)
+            {
+                case SyntaxKind.PropertyDeclaration:
+                    {
+                        var org = Origin as PropertyDeclarationSyntax;
+                        Debug.Assert(org != null, "org != null");
+                        Signature = org.Identifier.ToString();
+                    }
+                    break;
+                case SyntaxKind.IndexerDeclaration:
+                    {
+                        var org = Origin as IndexerDeclarationSyntax;
+                        Debug.Assert(org != null, "org != null");
+                        Signature = org.ThisKeyword.ToString() + org.ParameterList;
+                    }
+                    break;
+                default:
+                    throw new InvalidOperationException();
+            }
         }
 
         public override void Accept(IProxyAlgorithm algorithm) => algorithm.Apply(this);
 
-        public string Signature
-        {
-            get
-            {
-                switch (Kind)
-                {
-                    case SyntaxKind.PropertyDeclaration:
-                    {
-                        var origin = Origin as PropertyDeclarationSyntax;
-                        Debug.Assert(origin != null, "origin != null");
-                        return origin.Identifier.ToString();
-                    }
-                    case SyntaxKind.IndexerDeclaration:
-                    {
-                        var origin = Origin as IndexerDeclarationSyntax;
-                        Debug.Assert(origin != null, "origin != null");
-                        return origin.ThisKeyword.ToString() + origin.ParameterList;
-                    }
-                }
-
-                throw new InvalidOperationException();
-            }
-        }
+        public string Signature { get; }
 
         public string Type
         {

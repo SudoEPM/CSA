@@ -28,7 +28,7 @@ namespace CSA
             Bind<IProxyIterator>().To<PreOrderDepthFirstProxyIterator>().Named("PreOrder");
 
             //Bind<IProxyAlgorithm>().To<PrintTreeAlgorithm>();
-            if (_options.ComputeMetrics) Bind<IProxyAlgorithm>().To<InitTreeAlgorithm>();
+            Bind<IProxyAlgorithm>().To<InitTreeAlgorithm>();
             if (_options.ComputeMetrics) Bind<IProxyAlgorithm>().To<MetricCalculatorAlgorithm>();
             if (_options.GenerateUml) Bind<IProxyAlgorithm>().To<UmlGeneratorAlgorithm>();
 
