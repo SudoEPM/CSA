@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CSA.ProxyTree.Algorithms;
 using CSA.ProxyTree.Nodes;
-using CSA.ProxyTree.Iterators;
 using CSA.RoslynWalkers;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 using Ninject;
 

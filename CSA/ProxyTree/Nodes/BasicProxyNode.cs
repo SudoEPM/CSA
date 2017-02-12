@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using CSA.ProxyTree.Algorithms;
@@ -40,5 +41,22 @@ namespace CSA.ProxyTree.Nodes
         public virtual void Accept(IProxyAlgorithm algorithm) => algorithm.Apply(this);
 
         public string ClassSignature { get; set; }
+
+        protected string FindProtection(SyntaxTokenList modifiers, string def)
+        {
+            try
+            {
+                var modifier = modifiers.First(x =>
+                    x.Kind() == SyntaxKind.PublicKeyword ||
+                    x.Kind() == SyntaxKind.PrivateKeyword ||
+                    x.Kind() == SyntaxKind.ProtectedKeyword ||
+                    x.Kind() == SyntaxKind.InternalKeyword);
+                return modifier.ToString();
+            }
+            catch (InvalidOperationException)
+            {
+                return def;
+            }
+        }
     }
 }

@@ -15,7 +15,7 @@ namespace CSA.ProxyTree.Nodes
         {
             var baseNode = origin as BaseMethodDeclarationSyntax;
             Debug.Assert(baseNode != null, "baseNode != null");
-            Protection = FindProtection(baseNode.Modifiers);
+            Protection = FindProtection(baseNode.Modifiers, "private");
 
             switch (Kind)
             {
@@ -52,22 +52,5 @@ namespace CSA.ProxyTree.Nodes
         public string Protection { get; }
 
         public string Signature => Name + Parameters;
-
-        private string FindProtection(SyntaxTokenList modifiers)
-        {
-            try
-            {
-                var modifier = modifiers.First(x =>
-                    x.Kind() == SyntaxKind.PublicKeyword ||
-                    x.Kind() == SyntaxKind.PrivateKeyword ||
-                    x.Kind() == SyntaxKind.ProtectedKeyword ||
-                    x.Kind() == SyntaxKind.InternalKeyword);
-                return modifier.ToString();
-            }
-            catch (InvalidOperationException)
-            {
-                return "private";
-            }
-        }
     }
 }

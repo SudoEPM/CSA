@@ -12,6 +12,16 @@ namespace CSA.ProxyTree.Nodes
         public ForestNode(List<IProxyNode> childs)
         {
             Childs = childs;
+            // We will ensure that the childs are correctly linked...
+            for (int i = 0; i < childs.Count; i++)
+            {
+                var child = childs[i];
+                child.Parent = this;
+                if (i != 0)
+                    child.Left = childs[i - 1];
+                if (i != childs.Count - 1)
+                    child.Right = childs[i + 1];
+            }
         }
 
         public List<IProxyNode> Childs { get; }
@@ -38,6 +48,10 @@ namespace CSA.ProxyTree.Nodes
         {
             get
             {
+                throw new InvalidOperationException("The root is in no class.");
+            }
+            set
+            {  
                 throw new InvalidOperationException("The root is in no class.");
             }
         }

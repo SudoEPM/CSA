@@ -4,6 +4,7 @@ using System.Linq;
 using CSA.ProxyTree.Nodes;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Ninject;
 
 namespace CSA.RoslynWalkers
@@ -27,6 +28,7 @@ namespace CSA.RoslynWalkers
             _mapTypes[SyntaxKind.ClassDeclaration] = typeof(ClassNode);
             _mapTypes[SyntaxKind.StructDeclaration] = typeof(ClassNode);
             _mapTypes[SyntaxKind.InterfaceDeclaration] = typeof(ClassNode);
+            _mapTypes[SyntaxKind.FieldDeclaration] = typeof(FieldNode);
 
             var interfaceType = typeof(IProxyNode).Name;
             foreach (var type in _mapTypes)
@@ -40,7 +42,29 @@ namespace CSA.RoslynWalkers
 
         public override void Visit(SyntaxNode node)
         {
-            var nodeType = _mapTypes.ContainsKey(node.Kind()) ? _mapTypes[node.Kind()] : typeof(BasicProxyNode);
+            Type nodeType;
+            // Check if there's a direct mapping
+            if (_mapTypes.ContainsKey(node.Kind()))
+            {
+                nodeType = _mapTypes[node.Kind()];
+            }
+            else
+            {
+                // Check if we can convert it to a generic statement or expression
+                if (node is StatementSyntax)
+                {
+                    nodeType = typeof (StatementNode);
+                }
+                else if (node is ExpressionSyntax)
+                {
+                    nodeType = typeof(ExpressionNode);
+                }
+                else
+                {
+                    nodeType = typeof (BasicProxyNode);
+                }
+            }
+
             Program.Kernel.Bind<SyntaxNode>().ToMethod(x => node);
             var curr = (IProxyNode) Program.Kernel.Get(nodeType);
             Program.Kernel.Unbind<SyntaxNode>();

@@ -14,7 +14,7 @@ namespace CSA.ProxyTree.Nodes
         IProxyNode Left { get; set; }
         IProxyNode Right { get; set; }
 
-        string ClassSignature { get; }
+        string ClassSignature { get; set; }
         string FileName { get; }
 
         IEnumerable<IProxyNode> Ancestors();
