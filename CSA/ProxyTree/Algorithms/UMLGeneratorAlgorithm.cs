@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CSA.GraphVizExtension;
 using CSA.ProxyTree.Iterators;
 using CSA.ProxyTree.Nodes;
 using DotBuilder;
@@ -15,18 +16,27 @@ namespace CSA.ProxyTree.Algorithms
     class UmlGeneratorAlgorithm : IProxyAlgorithm
     {
         private readonly FileStream _output;
+        private readonly Dictionary<string, ClassNode> _classMapping;
         private readonly string _graphVizPath;
         private readonly GraphBase _umlGraph;
 
         private List<string> _currentConstructors;
         private List<string> _currentMethods;
         private List<string> _currentProperties;
+        private List<string> _currentFields;
+        private HashSet<string> _currentDepedencies;
 
-        public UmlGeneratorAlgorithm([Named("PostOrder")] IProxyIterator iterator, [Named("UML")] FileStream output, ProgramOptions options)
+        public UmlGeneratorAlgorithm(
+            [Named("PostOrder")] IProxyIterator iterator, 
+            [Named("UML")] FileStream output, 
+            ProgramOptions options, 
+            [Named("ClassMapping")]
+            Dictionary<string, ClassNode> classMapping)
         {
             Iterator = iterator;
 
             _output = output;
+            _classMapping = classMapping;
             _graphVizPath = options.GraphVizPath;
             _umlGraph = Graph.Directed("UML").Of(Font.Name("Bitstream Vera Sans"), Font.Size(8))
                 .With(AttributesFor.Node.Of(new Shape("record")));
@@ -63,16 +73,43 @@ namespace CSA.ProxyTree.Algorithms
                 _currentProperties = null;
             }
 
+            if (_currentFields != null)
+            {
+                content.Add(string.Join(@"\l", _currentFields) + @"\l");
+                _currentFields = null;
+            }
+
             // Gen the class
             _umlGraph.With(GNode.Name(node.Signature, string.Join("|", content)));
+
+            foreach (var baseType in node.BaseTypes)
+            {
+                _umlGraph.With(Edge.Between(node.Signature, baseType).Of(new ArrowHead("empty")));
+            }
+
+            if (_currentDepedencies != null)
+            {
+                foreach (var depedency in _currentDepedencies)
+                {
+                    _umlGraph.With(Edge.Between(node.Signature, depedency));
+                }
+                _currentDepedencies = null;
+            }
         }
 
         public void Apply(ForestNode node)
         {
             // Do nothing on root for now
-            var graphviz = new GraphViz(_graphVizPath, OutputFormat.Png);
+            var graphviz = new DotBuilder.GraphViz(_graphVizPath, OutputFormat.Png);
 
-            Console.WriteLine(_umlGraph.Render());
+            var dotFile = _umlGraph.Render();
+
+            // For debug purpose
+            //Console.WriteLine(dotFile);
+            using (TextWriter fs = new StreamWriter("uml.dot"))
+            {
+                fs.WriteLine(dotFile);
+            }
 
             graphviz.RenderGraph(_umlGraph, _output);
             _output.Flush();
@@ -155,6 +192,50 @@ namespace CSA.ProxyTree.Algorithms
             line += $"{node.Signature}({(node.Accessor == "set" ? node.Type : "")}){ret}";
 
             _currentProperties.Add(line);
+            if (node.IsAutomatic && _classMapping.ContainsKey(node.Type))
+            {
+                if (_currentDepedencies == null)
+                    _currentDepedencies = new HashSet<string>();
+
+                _currentDepedencies.Add(node.Type);
+            }
+        }
+
+        public void Apply(FieldNode node)
+        {
+            if (_currentFields == null)
+                _currentFields = new List<string>();
+
+            var line = "";
+            switch (node.Protection)
+            {
+                case "private":
+                    line += "- ";
+                    break;
+                case "public":
+                    line += "+ ";
+                    break;
+                case "protected":
+                    line += "# ";
+                    break;
+                case "internal":
+                    line += "~ ";
+                    break;
+            }
+
+            foreach (var variable in node.Variables)
+            {
+                var res = line + $"{variable} : {node.Type}";
+                _currentFields.Add(res);
+            }
+
+            if (_classMapping.ContainsKey(node.Type))
+            {
+                if(_currentDepedencies == null)
+                    _currentDepedencies = new HashSet<string>();
+
+                _currentDepedencies.Add(node.Type);
+            }
         }
     }
 }

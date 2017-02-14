@@ -11,11 +11,13 @@ namespace CSA.ProxyTree.Algorithms
     {
         private ClassNode _currentClass;
         private PropertyNode _currentProperty;
-        private readonly List<Func<IProxyNode, bool>> _filterRules; 
+        private readonly List<Func<IProxyNode, bool>> _filterRules;
+        private readonly Dictionary<string, ClassNode> _classMapping;
 
-        public InitTreeAlgorithm([Named("PreOrder")] IProxyIterator iterator)
+        public InitTreeAlgorithm([Named("PreOrder")] IProxyIterator iterator, [Named("ClassMapping")] Dictionary<string, ClassNode> classMapping)
         {
             Iterator = iterator;
+            _classMapping = classMapping;
 
             _filterRules = new List<Func<IProxyNode, bool>>
             {
@@ -62,6 +64,8 @@ namespace CSA.ProxyTree.Algorithms
             _currentClass = node;
 
             Apply(node as IProxyNode);
+
+            _classMapping[node.Signature] = node;
         }
 
         public void Apply(MethodNode node)
@@ -86,6 +90,11 @@ namespace CSA.ProxyTree.Algorithms
 
             node.Name = _currentProperty.Signature;
 
+            Apply(node as IProxyNode);
+        }
+
+        public void Apply(FieldNode node)
+        {
             Apply(node as IProxyNode);
         }
     }

@@ -121,7 +121,8 @@
   <ItemGroup>
     <Compile Include="CSAModule.cs" />
     <Compile Include="ProgramOptions.cs" />
-    <Compile Include="ProxyTree\Algorithms\GNode.cs" />
+    <Compile Include="GraphVizExtension\ArrowHead.cs" />
+    <Compile Include="GraphVizExtension\GNode.cs" />
     <Compile Include="ProxyTree\Algorithms\InitTreeAlgorithm.cs" />
     <Compile Include="ProxyTree\Algorithms\PrintTreeAlgorithm.cs" />
     <Compile Include="ProxyTree\Algorithms\UMLGeneratorAlgorithm.cs" />

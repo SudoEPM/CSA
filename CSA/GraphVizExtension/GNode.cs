@@ -1,7 +1,7 @@
 using DotBuilder.Attributes;
 using DotBuilder.Statements;
 
-namespace CSA.ProxyTree.Algorithms
+namespace CSA.GraphVizExtension
 {
     class GNode : Statement<Node, INodeAttribute>
     {
@@ -10,6 +10,8 @@ namespace CSA.ProxyTree.Algorithms
         private GNode(string name, string content)
         {
             _name = name;
+            // Escape some characters...
+            content = content.Replace("<", @"\<").Replace(">", @"\>");
             this.Of(Label.With("{" + _name + "|" + content + "}"));
         }
 

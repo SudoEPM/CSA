@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using CSA.ProxyTree.Algorithms;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CSA.ProxyTree.Nodes
 {
-    class FieldNode : BasicProxyNode
+    public class FieldNode : BasicProxyNode
     {
         public FieldNode(SyntaxNode origin) : base(origin)
         {
@@ -17,8 +18,10 @@ namespace CSA.ProxyTree.Nodes
             var varDeclaration = org.ChildNodes().First(x => x.Kind() == SyntaxKind.VariableDeclaration) as VariableDeclarationSyntax;
             Debug.Assert(varDeclaration != null, "varDeclaration != null");
             Type = varDeclaration.Type.ToString();
-            Variables = varDeclaration.Variables.Select(x => x.ToString()).ToList();
+            Variables = varDeclaration.Variables.Select(x => x.Identifier.ToString()).ToList();
         }
+
+        public override void Accept(IProxyAlgorithm algorithm) => algorithm.Apply(this);
 
         public List<string> Variables { get; }
 

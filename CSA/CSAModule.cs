@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CSA.ProxyTree;
 using CSA.ProxyTree.Algorithms;
 using CSA.ProxyTree.Iterators;
-using Ninject;
+using CSA.ProxyTree.Nodes;
 using Ninject.Modules;
 
 namespace CSA
@@ -38,6 +33,8 @@ namespace CSA
             //Bind<TextWriter>().ToConstant(Console.Out).Named("Metric");
             if (_options.ComputeMetrics) Bind<TextWriter>().ToConstant(new StreamWriter("metric.json")).Named("Metric");
             if (_options.GenerateUml) Bind<FileStream>().ToConstant(new FileStream("uml.png", FileMode.Create)).Named("UML");
+
+            Bind<Dictionary<string, ClassNode>>().ToConstant(new Dictionary<string, ClassNode>()).Named("ClassMapping");
 
         }
     }

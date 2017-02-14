@@ -14,5 +14,6 @@ namespace CSA.ProxyTree.Algorithms
         void Apply(MethodNode node);
         void Apply(PropertyNode node);
         void Apply(PropertyAccessorNode node);
+        void Apply(FieldNode node);
     }
 }

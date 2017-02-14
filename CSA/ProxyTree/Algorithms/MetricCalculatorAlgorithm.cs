@@ -147,5 +147,10 @@ namespace CSA.ProxyTree.Algorithms
             _results.AddLast(_current);
             _current = null;
         }
+
+        public void Apply(FieldNode node)
+        {
+            Apply(node as IProxyNode);
+        }
     }
 }

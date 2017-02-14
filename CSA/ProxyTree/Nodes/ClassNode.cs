@@ -1,5 +1,8 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using CSA.ProxyTree.Algorithms;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -19,29 +22,19 @@ namespace CSA.ProxyTree.Nodes
         {
             get
             {
-                switch (Kind)
-                {
-                    case SyntaxKind.ClassDeclaration:
-                    {
-                            var origin = Origin as ClassDeclarationSyntax;
-                            Debug.Assert(origin != null, "origin != null");
-                            return origin.Identifier.ToString();
-                    }
-                    case SyntaxKind.StructDeclaration:
-                    {
-                        var origin = Origin as StructDeclarationSyntax;
-                        Debug.Assert(origin != null, "origin != null");
-                        return origin.Identifier.ToString();
-                    }
-                    case SyntaxKind.InterfaceDeclaration:
-                    {
-                        var origin = Origin as InterfaceDeclarationSyntax;
-                        Debug.Assert(origin != null, "origin != null");
-                        return origin.Identifier.ToString();
-                    }
-                }
+                var origin = Origin as BaseTypeDeclarationSyntax;
+                Debug.Assert(origin != null, "origin != null");
+                return origin.Identifier.ToString();
+            }
+        }
 
-                throw new InvalidOperationException();
+        public IEnumerable<string> BaseTypes
+        {
+            get
+            {
+                var origin = Origin as BaseTypeDeclarationSyntax;
+                Debug.Assert(origin != null, "origin != null");
+                return origin.BaseList?.Types.Select(x => x.Type.ToString()) ?? Enumerable.Empty<string>();
             }
         }
     }

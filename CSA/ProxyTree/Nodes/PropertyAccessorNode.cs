@@ -12,6 +12,7 @@ namespace CSA.ProxyTree.Nodes
             var node = Origin as AccessorDeclarationSyntax;
             Debug.Assert(node != null, "node != null");
             Protection = FindProtection(node.Modifiers, "");
+            IsAutomatic = node.Body == null;
         }
 
         public override void Accept(IProxyAlgorithm algorithm) => algorithm.Apply(this);
@@ -21,6 +22,8 @@ namespace CSA.ProxyTree.Nodes
         public string Type { get; set; }
 
         public string Accessor => ((AccessorDeclarationSyntax) Origin).Keyword.ToString();
+
+        public bool IsAutomatic { get; }
 
         public string Protection { get; set; }
 

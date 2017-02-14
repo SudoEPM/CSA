@@ -52,5 +52,10 @@ namespace CSA.ProxyTree.Algorithms
         {
             Apply(node as IProxyNode);
         }
+
+        public void Apply(FieldNode node)
+        {
+            Apply(node as IProxyNode);
+        }
     }
 }
