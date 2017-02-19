@@ -125,7 +125,8 @@
     <Compile Include="GraphVizExtension\GNode.cs" />
     <Compile Include="ProxyTree\Algorithms\InitTreeAlgorithm.cs" />
     <Compile Include="ProxyTree\Algorithms\PrintTreeAlgorithm.cs" />
-    <Compile Include="ProxyTree\Algorithms\UMLGeneratorAlgorithm.cs" />
+    <Compile Include="ProxyTree\Algorithms\UmlClassGeneratorAlgorithm.cs" />
+    <Compile Include="ProxyTree\Algorithms\UmlPackageGeneratorAlgorithm.cs" />
     <Compile Include="ProxyTree\Iterators\IProxyIterator.cs" />
     <Compile Include="ProxyTree\Iterators\PostOrderDepthFirstProxyIterator.cs" />
     <Compile Include="ProxyTree\Iterators\PreOrderDepthFirstProxyIterator.cs" />

@@ -36,10 +36,12 @@ namespace CSA
 
             foreach (var algorithm in algorithms)
             {
+                Console.WriteLine($"{algorithm.Name} : Started!");
                 foreach (var node in algorithm.Iterator.GetEnumerable())
                 {
                     node.Accept(algorithm);
                 }
+                Console.WriteLine($"{algorithm.Name} : Completed!");
             }
 
             Console.WriteLine("Mission Completed");

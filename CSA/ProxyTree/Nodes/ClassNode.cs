@@ -14,9 +14,21 @@ namespace CSA.ProxyTree.Nodes
     {
         public ClassNode(SyntaxNode origin) : base(origin)
         {
+            var namespaceDeclarationSyntax = (NamespaceDeclarationSyntax) origin.Ancestors().FirstOrDefault(x => x is NamespaceDeclarationSyntax);
+            if (namespaceDeclarationSyntax != null)
+                Namespace = namespaceDeclarationSyntax.Name.ToString();
+
+            var root = ((CompilationUnitSyntax) origin.Ancestors().First(x => x is CompilationUnitSyntax));
+            NamespaceDepedencies = root.ChildNodes().Where(x => x is UsingDirectiveSyntax).Select(x => ((UsingDirectiveSyntax)x).Name.ToString()).ToList();
         }
 
         public override void Accept(IProxyAlgorithm algorithm) => algorithm.Apply(this);
+
+        public string Namespace { get; }
+
+        public List<string> NamespaceDepedencies { get; }
+
+        public bool IsInterface => Origin is InterfaceDeclarationSyntax;
 
         public string Signature
         {

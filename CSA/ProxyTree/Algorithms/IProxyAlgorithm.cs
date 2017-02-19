@@ -7,6 +7,7 @@ namespace CSA.ProxyTree.Algorithms
     public interface IProxyAlgorithm
     {
         IProxyIterator Iterator { get; }
+        string Name { get; }
 
         void Apply(IProxyNode node);
         void Apply(ForestNode node);

@@ -32,6 +32,8 @@ namespace CSA.ProxyTree.Algorithms
 
         public IProxyIterator Iterator { get; }
 
+        public string Name => GetType().Name;
+
         public void Apply(IProxyNode node)
         {
             if (_current == null)

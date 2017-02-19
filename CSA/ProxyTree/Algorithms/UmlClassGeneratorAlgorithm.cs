@@ -13,7 +13,7 @@ using Ninject;
 
 namespace CSA.ProxyTree.Algorithms
 {
-    class UmlGeneratorAlgorithm : IProxyAlgorithm
+    class UmlClassGeneratorAlgorithm : IProxyAlgorithm
     {
         private readonly FileStream _output;
         private readonly Dictionary<string, ClassNode> _classMapping;
@@ -26,12 +26,11 @@ namespace CSA.ProxyTree.Algorithms
         private List<string> _currentFields;
         private HashSet<string> _currentDepedencies;
 
-        public UmlGeneratorAlgorithm(
+        public UmlClassGeneratorAlgorithm(
             [Named("PostOrder")] IProxyIterator iterator, 
-            [Named("UML")] FileStream output, 
+            [Named("UML-CLASS")] FileStream output, 
             ProgramOptions options, 
-            [Named("ClassMapping")]
-            Dictionary<string, ClassNode> classMapping)
+            [Named("ClassMapping")] Dictionary<string, ClassNode> classMapping)
         {
             Iterator = iterator;
 
@@ -44,9 +43,11 @@ namespace CSA.ProxyTree.Algorithms
 
         public IProxyIterator Iterator { get; }
 
+        public string Name => GetType().Name;
+
         public void Apply(IProxyNode node)
         {
-            // TODO
+            // Nothing to do
         }
 
         public void Apply(ClassNode node)
@@ -102,14 +103,13 @@ namespace CSA.ProxyTree.Algorithms
             // Do nothing on root for now
             var graphviz = new DotBuilder.GraphViz(_graphVizPath, OutputFormat.Png);
 
-            var dotFile = _umlGraph.Render();
-
             // For debug purpose
-            //Console.WriteLine(dotFile);
+            /*Console.WriteLine(dotFile);
+            var dotFile = _umlGraph.Render();
             using (TextWriter fs = new StreamWriter("uml.dot"))
             {
                 fs.WriteLine(dotFile);
-            }
+            }*/
 
             graphviz.RenderGraph(_umlGraph, _output);
             _output.Flush();

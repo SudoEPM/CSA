@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CSA.ProxyTree.Iterators;
 using CSA.ProxyTree.Nodes;
+using Microsoft.CodeAnalysis.CSharp;
 using Ninject;
 
 namespace CSA.ProxyTree.Algorithms
@@ -27,6 +28,9 @@ namespace CSA.ProxyTree.Algorithms
         }
 
         public IProxyIterator Iterator { get; }
+
+        public string Name => GetType().Name;
+
         public void Apply(IProxyNode node)
         {
             if (TrimTree && _filterRules.Any(x => x(node)))
@@ -76,6 +80,10 @@ namespace CSA.ProxyTree.Algorithms
         public void Apply(PropertyNode node)
         {
             _currentProperty = node;
+            if (node.Protection == "")
+            {
+                node.Protection = _currentClass.IsInterface ? "public" : "private";
+            }
 
             Apply(node as IProxyNode);
         }

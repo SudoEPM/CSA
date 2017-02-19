@@ -14,7 +14,7 @@ namespace CSA.ProxyTree.Nodes
         {
             var baseOrigin = origin as BasePropertyDeclarationSyntax;
             Debug.Assert(baseOrigin != null, "baseOrigin != null");
-            Protection = FindProtection(baseOrigin.Modifiers, "private");
+            Protection = FindProtection(baseOrigin.Modifiers, "");
 
             switch (Kind)
             {
@@ -51,6 +51,6 @@ namespace CSA.ProxyTree.Nodes
             }
         }
 
-        public string Protection { get; }
+        public string Protection { get; set; }
     }
 }

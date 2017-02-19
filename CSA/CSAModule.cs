@@ -25,14 +25,16 @@ namespace CSA
             //Bind<IProxyAlgorithm>().To<PrintTreeAlgorithm>();
             Bind<IProxyAlgorithm>().To<InitTreeAlgorithm>();
             if (_options.ComputeMetrics) Bind<IProxyAlgorithm>().To<MetricCalculatorAlgorithm>();
-            if (_options.GenerateUml) Bind<IProxyAlgorithm>().To<UmlGeneratorAlgorithm>();
+            if (_options.GeneratePackageUml) Bind<IProxyAlgorithm>().To<UmlPackageGeneratorAlgorithm>();
+            if (_options.GenerateClassUml) Bind<IProxyAlgorithm>().To<UmlClassGeneratorAlgorithm>();
 
             //Bind<TextWriter>().ToConstant(Console.Out).Named("Generic");
             Bind<TextWriter>().ToConstant(new StreamWriter("generic.txt")).Named("Generic");
 
             //Bind<TextWriter>().ToConstant(Console.Out).Named("Metric");
             if (_options.ComputeMetrics) Bind<TextWriter>().ToConstant(new StreamWriter("metric.json")).Named("Metric");
-            if (_options.GenerateUml) Bind<FileStream>().ToConstant(new FileStream("uml.png", FileMode.Create)).Named("UML");
+            if (_options.GenerateClassUml) Bind<FileStream>().ToConstant(new FileStream("uml-class.png", FileMode.Create)).Named("UML-CLASS");
+            if (_options.GenerateClassUml) Bind<FileStream>().ToConstant(new FileStream("uml-package.png", FileMode.Create)).Named("UML-PACKAGE");
 
             Bind<Dictionary<string, ClassNode>>().ToConstant(new Dictionary<string, ClassNode>()).Named("ClassMapping");
 
