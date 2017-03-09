@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CSA.ProxyTree.Nodes;
+using CSA.ProxyTree.Nodes.Interfaces;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -78,13 +79,6 @@ namespace CSA.RoslynWalkers
                 var parent = _mapNodesConversion[node.Parent];
                 curr.Parent = parent;
                 parent.Childs.Add(curr);
-
-                if (curr.Parent.Childs.Any())
-                {
-                    var leftBrother = curr.Parent.Childs.Last();
-                    leftBrother.Right = curr;
-                    curr.Left = leftBrother;
-                }
             }
 
             _mapNodesConversion[node] = curr; 

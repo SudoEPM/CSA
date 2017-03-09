@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CSA.ProxyTree.Algorithms;
-using CSA.ProxyTree.Iterators;
+using CSA.ProxyTree.Nodes.Interfaces;
 using Microsoft.CodeAnalysis.CSharp;
 
 namespace CSA.ProxyTree.Nodes
@@ -13,14 +13,9 @@ namespace CSA.ProxyTree.Nodes
         {
             Childs = childs;
             // We will ensure that the childs are correctly linked...
-            for (int i = 0; i < childs.Count; i++)
+            foreach (var child in childs)
             {
-                var child = childs[i];
                 child.Parent = this;
-                if (i != 0)
-                    child.Left = childs[i - 1];
-                if (i != childs.Count - 1)
-                    child.Right = childs[i + 1];
             }
         }
 

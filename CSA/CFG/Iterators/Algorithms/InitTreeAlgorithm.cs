@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CSA.ProxyTree.Iterators;
 using CSA.ProxyTree.Nodes;
+using CSA.ProxyTree.Nodes.Interfaces;
 using Microsoft.CodeAnalysis.CSharp;
 using Ninject;
 
@@ -42,12 +43,6 @@ namespace CSA.ProxyTree.Algorithms
                 node.Parent.Childs.RemoveAt(ndx);
                 node.Parent.Childs.InsertRange(ndx, node.Childs);
                 node.Childs.ForEach(x => x.Parent = node.Parent);
-
-
-                if (node.Left != null)
-                    node.Left.Right = node.Right;
-                if (node.Right != null)
-                    node.Right.Left = node.Left;
             }
             // We keep theses nodes
             else
@@ -102,6 +97,16 @@ namespace CSA.ProxyTree.Algorithms
         }
 
         public void Apply(FieldNode node)
+        {
+            Apply(node as IProxyNode);
+        }
+
+        public void Apply(StatementNode node)
+        {
+            Apply(node as IProxyNode);
+        }
+
+        public void Apply(ExpressionNode node)
         {
             Apply(node as IProxyNode);
         }

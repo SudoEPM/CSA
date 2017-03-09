@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using CSA.ProxyTree.Nodes;
 using CSA.ProxyTree.Iterators;
+using CSA.ProxyTree.Nodes.Interfaces;
 
 namespace CSA.ProxyTree.Algorithms
 {
@@ -16,5 +17,7 @@ namespace CSA.ProxyTree.Algorithms
         void Apply(PropertyNode node);
         void Apply(PropertyAccessorNode node);
         void Apply(FieldNode node);
+        void Apply(StatementNode node);
+        void Apply(ExpressionNode node);
     }
 }

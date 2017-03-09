@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using CSA.ProxyTree.Algorithms;
+using CSA.ProxyTree.Nodes.Interfaces;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CSA.ProxyTree.Nodes
 {
-    public class MethodNode : BasicProxyNode
+    public class MethodNode : BasicProxyNode, ICallableNode
     {
         public MethodNode(SyntaxNode origin) : base(origin)
         {
@@ -25,7 +26,7 @@ namespace CSA.ProxyTree.Nodes
                         Debug.Assert(node != null, "node != null");
                         Name = node.Identifier.ToString();
                         Parameters = node.ParameterList.Parameters.Select(x => new Tuple<string, string>(x.Type.ToString(), x.Identifier.ToString())).ToList();
-                        ReturnType = "";
+                        Type = "";
                     }
                     break;
                 case SyntaxKind.MethodDeclaration:
@@ -34,7 +35,7 @@ namespace CSA.ProxyTree.Nodes
                         Debug.Assert(node != null, "node != null");
                         Name = node.Identifier.ToString();
                         Parameters = node.ParameterList.Parameters.Select(x => new Tuple<string, string>(x.Type.ToString(), x.Identifier.ToString())).ToList();
-                        ReturnType = node.ReturnType.ToString();
+                        Type = node.ReturnType.ToString();
                     }
                     break;
                 default:
@@ -48,9 +49,9 @@ namespace CSA.ProxyTree.Nodes
 
         public List<Tuple<string, string>> Parameters { get; }
 
-        public string ReturnType { get; }
         public string Protection { get; }
 
         public string Signature => Name + Parameters;
+        public string Type { get; }
     }
 }

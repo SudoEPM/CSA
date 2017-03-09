@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CSA.ProxyTree.Nodes;
+using CSA.ProxyTree.Nodes.Interfaces;
 using Ninject;
 
 namespace CSA.ProxyTree.Iterators
@@ -9,11 +11,19 @@ namespace CSA.ProxyTree.Iterators
     {
         private readonly Stack<IProxyNode> _stack;
 
-        public PreOrderDepthFirstProxyIterator(Stack<IProxyNode> stack, [Named("Root")] IProxyNode forest)
+        public PreOrderDepthFirstProxyIterator(Stack<IProxyNode> stack, [Named("Root")] IProxyNode forest, HashSet<Type> nodesToSkip)
         {
             _stack = stack;
+            NodesToSkip = nodesToSkip;
             _stack.Clear(); // Just to be sure that ninject didn't do something fishy
             _stack.Push(forest);
+        }
+
+        public HashSet<Type> NodesToSkip { get; }
+
+        private bool Accept(IProxyNode node)
+        {
+            return !NodesToSkip.Contains(node.GetType());
         }
 
         public IEnumerable<IProxyNode> GetEnumerable()
@@ -23,7 +33,7 @@ namespace CSA.ProxyTree.Iterators
                 // Find the current element
                 var current = _stack.Pop();
                 // Find the next elements
-                current.Childs.ForEach(x => _stack.Push(x));
+                current.Childs.Where(Accept).ToList().ForEach(x => _stack.Push(x));
                 // Return the current
                 yield return current;
             }

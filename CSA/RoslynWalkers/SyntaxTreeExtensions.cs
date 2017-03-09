@@ -1,4 +1,5 @@
 using CSA.ProxyTree.Nodes;
+using CSA.ProxyTree.Nodes.Interfaces;
 using Microsoft.CodeAnalysis;
 using Ninject;
 

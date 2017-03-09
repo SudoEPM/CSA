@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using CSA.ProxyTree.Nodes;
 using CSA.ProxyTree.Iterators;
+using CSA.ProxyTree.Nodes.Interfaces;
 using Microsoft.CodeAnalysis.CSharp;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -151,6 +152,16 @@ namespace CSA.ProxyTree.Algorithms
         }
 
         public void Apply(FieldNode node)
+        {
+            Apply(node as IProxyNode);
+        }
+
+        public void Apply(StatementNode node)
+        {
+            Apply(node as IProxyNode);
+        }
+
+        public void Apply(ExpressionNode node)
         {
             Apply(node as IProxyNode);
         }

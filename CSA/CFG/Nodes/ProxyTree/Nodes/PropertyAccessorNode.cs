@@ -1,11 +1,12 @@
 using System.Diagnostics;
 using CSA.ProxyTree.Algorithms;
+using CSA.ProxyTree.Nodes.Interfaces;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CSA.ProxyTree.Nodes
 {
-    public class PropertyAccessorNode : BasicProxyNode
+    public class PropertyAccessorNode : BasicProxyNode, ICallableNode
     {
         public PropertyAccessorNode(SyntaxNode origin) : base(origin)
         {

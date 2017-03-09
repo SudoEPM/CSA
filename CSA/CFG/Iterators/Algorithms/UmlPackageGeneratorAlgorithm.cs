@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using CSA.ProxyTree.Iterators;
 using CSA.ProxyTree.Nodes;
+using CSA.ProxyTree.Nodes.Interfaces;
 using DotBuilder;
 using DotBuilder.Attributes;
 using DotBuilder.Statements;
@@ -29,6 +30,8 @@ namespace CSA.ProxyTree.Algorithms
             [Named("ClassMapping")] Dictionary<string, ClassNode> classMapping)
         {
             Iterator = iterator;
+            Iterator.NodesToSkip.Add(typeof(StatementNode));
+            Iterator.NodesToSkip.Add(typeof(ExpressionNode));
 
             _output = output;
             _graphVizPath = options.GraphVizPath;
@@ -125,6 +128,16 @@ namespace CSA.ProxyTree.Algorithms
         }
 
         public void Apply(FieldNode node)
+        {
+            // Nothing to do
+        }
+
+        public void Apply(StatementNode node)
+        {
+            // Nothing to do
+        }
+
+        public void Apply(ExpressionNode node)
         {
             // Nothing to do
         }

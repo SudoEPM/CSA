@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CSA.CFG.Algorithms;
 using CSA.ProxyTree.Algorithms;
 using CSA.ProxyTree.Nodes;
+using CSA.ProxyTree.Nodes.Interfaces;
 using CSA.RoslynWalkers;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.MSBuild;
 using Ninject;
 
@@ -33,14 +37,23 @@ namespace CSA
 
             // Execute the different algorithms and visits required
             var algorithms = Kernel.GetAll<IProxyAlgorithm>().ToList();
-
             foreach (var algorithm in algorithms)
             {
+                algorithm.Iterator.GetEnumerable().Where(x => x is MethodNode).Select(x => x.ClassSignature.ToString());
+
                 Console.WriteLine($"{algorithm.Name} : Started!");
                 foreach (var node in algorithm.Iterator.GetEnumerable())
                 {
                     node.Accept(algorithm);
                 }
+                Console.WriteLine($"{algorithm.Name} : Completed!");
+            }
+
+            var cfgAlgorithms = Kernel.GetAll<ICfgAlgorithm>().ToList();
+            foreach (var algorithm in cfgAlgorithms)
+            {
+                Console.WriteLine($"{algorithm.Name} : Started!");
+                algorithm.Execute();
                 Console.WriteLine($"{algorithm.Name} : Completed!");
             }
 
@@ -57,6 +70,30 @@ namespace CSA
             foreach (var proj in projects)
             {
                 forest.AddRange(proj.Documents.Select(doc => doc.GetSyntaxTreeAsync().Result.GenerateProxy()));
+                foreach (var doc in proj.Documents)
+                {
+                    var model = doc.GetSemanticModelAsync().Result;
+                    var test =
+                    doc.GetSyntaxTreeAsync()
+                        .Result.GetRoot()
+                        .DescendantNodes()
+                        .OfType<ForEachStatementSyntax>()
+                        .FirstOrDefault();
+                    if (test != null)
+                    {
+                       var df = model.AnalyzeDataFlow(test);
+                       var cf = model.AnalyzeControlFlow(test);
+                    }
+
+                    var invok = doc.GetSyntaxTreeAsync()
+                        .Result.GetRoot()
+                        .DescendantNodes()
+                        .OfType<InvocationExpressionSyntax>();
+                    foreach (var invo in invok)
+                    {
+                        var foo = model.GetSymbolInfo(invo);
+                    }
+                }
                 nbProjectsParsed++;
                 Console.WriteLine(nbProjectsParsed + "/" + projects.Count + " projects have been analyzed!");
             }

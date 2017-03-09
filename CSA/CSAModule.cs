@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using CSA.CFG;
+using CSA.CFG.Algorithms;
+using CSA.CFG.Nodes;
 using CSA.ProxyTree.Algorithms;
 using CSA.ProxyTree.Iterators;
 using CSA.ProxyTree.Nodes;
@@ -24,9 +27,11 @@ namespace CSA
 
             //Bind<IProxyAlgorithm>().To<PrintTreeAlgorithm>();
             Bind<IProxyAlgorithm>().To<InitTreeAlgorithm>();
+            Bind<IProxyAlgorithm>().To<GenerateCfgAlgorithm>();
             if (_options.ComputeMetrics) Bind<IProxyAlgorithm>().To<MetricCalculatorAlgorithm>();
             if (_options.GeneratePackageUml) Bind<IProxyAlgorithm>().To<UmlPackageGeneratorAlgorithm>();
             if (_options.GenerateClassUml) Bind<IProxyAlgorithm>().To<UmlClassGeneratorAlgorithm>();
+            Bind<ICfgAlgorithm>().To<PrintCfgAlgorithm>();
 
             //Bind<TextWriter>().ToConstant(Console.Out).Named("Generic");
             Bind<TextWriter>().ToConstant(new StreamWriter("generic.txt")).Named("Generic");
@@ -36,8 +41,9 @@ namespace CSA
             if (_options.GenerateClassUml) Bind<FileStream>().ToConstant(new FileStream("uml-class.png", FileMode.Create)).Named("UML-CLASS");
             if (_options.GenerateClassUml) Bind<FileStream>().ToConstant(new FileStream("uml-package.png", FileMode.Create)).Named("UML-PACKAGE");
 
-            Bind<Dictionary<string, ClassNode>>().ToConstant(new Dictionary<string, ClassNode>()).Named("ClassMapping");
-
+            Bind<Dictionary<string, ClassNode>>().To<Dictionary<string, ClassNode>>().InSingletonScope().Named("ClassMapping");
+            Bind<CfgGraph>().To<CfgGraph>().InSingletonScope().Named("CFG");
+            Bind<FileStream>().ToConstant(new FileStream("cfg.png", FileMode.Create)).Named("CFG");
         }
     }
 }

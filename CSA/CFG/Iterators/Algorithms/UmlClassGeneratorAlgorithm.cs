@@ -5,6 +5,7 @@ using System.Linq;
 using CSA.GraphVizExtension;
 using CSA.ProxyTree.Iterators;
 using CSA.ProxyTree.Nodes;
+using CSA.ProxyTree.Nodes.Interfaces;
 using DotBuilder;
 using DotBuilder.Attributes;
 using DotBuilder.Statements;
@@ -33,6 +34,8 @@ namespace CSA.ProxyTree.Algorithms
             [Named("ClassMapping")] Dictionary<string, ClassNode> classMapping)
         {
             Iterator = iterator;
+            Iterator.NodesToSkip.Add(typeof(StatementNode));
+            Iterator.NodesToSkip.Add(typeof(ExpressionNode));
 
             _output = output;
             _classMapping = classMapping;
@@ -154,9 +157,9 @@ namespace CSA.ProxyTree.Algorithms
                     break;
             }
             line += $"{node.Name}({string.Join(", ", node.Parameters.Select(x => x.Item1))})";
-            if (node.ReturnType != "")
+            if (node.Type != "")
             {
-                line += $" : {node.ReturnType}";
+                line += $" : {node.Type}";
             }
             current.Add(line);
         }
@@ -236,6 +239,16 @@ namespace CSA.ProxyTree.Algorithms
 
                 _currentDepedencies.Add(node.Type);
             }
+        }
+
+        public void Apply(StatementNode node)
+        {
+            // Nothing to do
+        }
+
+        public void Apply(ExpressionNode node)
+        {
+            // Nothing to do
         }
     }
 }

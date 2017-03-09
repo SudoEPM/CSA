@@ -21,11 +21,11 @@ namespace CSA
             HelpText = "Compute the metrics of the solution.")]
         public bool ComputeMetrics { get; set; }
 
-        [Option('u', "uml-class", DefaultValue = true,
+        [Option('u', "uml-class", DefaultValue = false,
             HelpText = "Generate the class UML of the solution.")]
         public bool GenerateClassUml { get; set; }
 
-        [Option("uml-package", DefaultValue = true,
+        [Option("uml-package", DefaultValue = false,
             HelpText = "Generate the package UML of the solution.")]
         public bool GeneratePackageUml { get; set; }
 

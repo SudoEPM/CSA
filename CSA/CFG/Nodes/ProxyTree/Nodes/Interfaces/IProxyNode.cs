@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using CSA.ProxyTree.Algorithms;
-using CSA.ProxyTree.Iterators;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace CSA.ProxyTree.Nodes
+namespace CSA.ProxyTree.Nodes.Interfaces
 {
     public interface IProxyNode
     {
@@ -11,8 +10,8 @@ namespace CSA.ProxyTree.Nodes
         SyntaxKind Kind { get; }
 
         IProxyNode Parent { get; set; }
-        IProxyNode Left { get; set; }
-        IProxyNode Right { get; set; }
+        IProxyNode Left { get; }
+        IProxyNode Right { get; }
 
         string ClassSignature { get; set; }
         string FileName { get; }

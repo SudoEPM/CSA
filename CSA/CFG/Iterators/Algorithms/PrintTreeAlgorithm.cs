@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using CSA.ProxyTree.Iterators;
 using CSA.ProxyTree.Nodes;
+using CSA.ProxyTree.Nodes.Interfaces;
 using Ninject;
 
 namespace CSA.ProxyTree.Algorithms
@@ -57,6 +58,16 @@ namespace CSA.ProxyTree.Algorithms
         }
 
         public void Apply(FieldNode node)
+        {
+            Apply(node as IProxyNode);
+        }
+
+        public void Apply(StatementNode node)
+        {
+            Apply(node as IProxyNode);
+        }
+
+        public void Apply(ExpressionNode node)
         {
             Apply(node as IProxyNode);
         }
