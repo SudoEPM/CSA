@@ -14,9 +14,9 @@ namespace CSA.ProxyTree.Algorithms
         private ClassNode _currentClass;
         private PropertyNode _currentProperty;
         private readonly List<Func<IProxyNode, bool>> _filterRules;
-        private readonly Dictionary<string, ClassNode> _classMapping;
+        private readonly IDictionary<string, ClassNode> _classMapping;
 
-        public InitTreeAlgorithm([Named("PreOrder")] IProxyIterator iterator, [Named("ClassMapping")] Dictionary<string, ClassNode> classMapping)
+        public InitTreeAlgorithm([Named("PreOrder")] IProxyIterator iterator, [Named("ClassMapping")] IDictionary<string, ClassNode> classMapping)
         {
             Iterator = iterator;
             _classMapping = classMapping;

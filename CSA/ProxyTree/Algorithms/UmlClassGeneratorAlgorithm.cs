@@ -17,7 +17,7 @@ namespace CSA.ProxyTree.Algorithms
     class UmlClassGeneratorAlgorithm : IProxyAlgorithm
     {
         private readonly FileStream _output;
-        private readonly Dictionary<string, ClassNode> _classMapping;
+        private readonly IDictionary<string, ClassNode> _classMapping;
         private readonly string _graphVizPath;
         private readonly GraphBase _umlGraph;
 
@@ -31,7 +31,7 @@ namespace CSA.ProxyTree.Algorithms
             [Named("PostOrder")] IProxyIterator iterator, 
             [Named("UML-CLASS")] FileStream output, 
             ProgramOptions options, 
-            [Named("ClassMapping")] Dictionary<string, ClassNode> classMapping)
+            [Named("ClassMapping")] IDictionary<string, ClassNode> classMapping)
         {
             Iterator = iterator;
             Iterator.NodesToSkip.Add(typeof(StatementNode));

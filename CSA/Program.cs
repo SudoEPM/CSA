@@ -65,37 +65,10 @@ namespace CSA
             var workspace = MSBuildWorkspace.Create();
             var sol = workspace.OpenSolutionAsync(filepath).Result;
             var forest = new List<IProxyNode>();
-            var nbProjectsParsed = 0;
             var projects = sol.Projects.ToList();
             foreach (var proj in projects)
             {
-                forest.AddRange(proj.Documents.Select(doc => doc.GetSyntaxTreeAsync().Result.GenerateProxy()));
-                foreach (var doc in proj.Documents)
-                {
-                    var model = doc.GetSemanticModelAsync().Result;
-                    var test =
-                    doc.GetSyntaxTreeAsync()
-                        .Result.GetRoot()
-                        .DescendantNodes()
-                        .OfType<ForEachStatementSyntax>()
-                        .FirstOrDefault();
-                    if (test != null)
-                    {
-                       var df = model.AnalyzeDataFlow(test);
-                       var cf = model.AnalyzeControlFlow(test);
-                    }
-
-                    var invok = doc.GetSyntaxTreeAsync()
-                        .Result.GetRoot()
-                        .DescendantNodes()
-                        .OfType<InvocationExpressionSyntax>();
-                    foreach (var invo in invok)
-                    {
-                        var foo = model.GetSymbolInfo(invo);
-                    }
-                }
-                nbProjectsParsed++;
-                Console.WriteLine(nbProjectsParsed + "/" + projects.Count + " projects have been analyzed!");
+                forest.AddRange(proj.Documents.Where(x => x.Name.Contains("GenerateCfg")).Select(doc => doc.GetSyntaxTreeAsync().Result.GenerateProxy()));
             }
             return new ForestNode(forest);
         }

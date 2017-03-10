@@ -51,7 +51,7 @@ namespace CSA.ProxyTree.Nodes
 
         public string Protection { get; }
 
-        public string Signature => Name + Parameters;
+        public string Signature => Name + "(" + string.Join(", ", Parameters) + ")";
         public string Type { get; }
     }
 }

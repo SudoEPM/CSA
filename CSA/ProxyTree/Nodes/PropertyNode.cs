@@ -1,6 +1,5 @@
 using System;
 using System.Diagnostics;
-using System.Linq;
 using CSA.ProxyTree.Algorithms;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
