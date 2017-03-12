@@ -1,8 +1,5 @@
-using System.Diagnostics;
-using CSA.ProxyTree.Algorithms;
+using CSA.ProxyTree.Visitors.Interfaces;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CSA.ProxyTree.Nodes
 {
@@ -14,18 +11,9 @@ namespace CSA.ProxyTree.Nodes
 
         public override string ToString()
         {
-            switch (Kind)
-            {
-                case SyntaxKind.IfStatement:
-                {
-                    var stmt = Origin as IfStatementSyntax;
-                    Debug.Assert(stmt != null, "stmt != null");
-                    return $"if({stmt.Condition.ToString()})";
-                }
-            }
             return Origin.ToString();
         }
 
-        public override void Accept(IProxyAlgorithm algorithm) => algorithm.Apply(this);
+        public override void Accept(IProxyVisitor visitor) => visitor.Apply(this);
     }
 }

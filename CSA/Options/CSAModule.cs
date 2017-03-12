@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using CSA.CFG.Algorithms;
 using CSA.CFG.Nodes;
@@ -8,7 +7,7 @@ using CSA.ProxyTree.Iterators;
 using CSA.ProxyTree.Nodes;
 using Ninject.Modules;
 
-namespace CSA
+namespace CSA.Options
 {
     class CsaModule : NinjectModule
     {
@@ -25,13 +24,13 @@ namespace CSA
             Bind<IProxyIterator>().To<PostOrderDepthFirstProxyIterator>().Named("PostOrder");
             Bind<IProxyIterator>().To<PreOrderDepthFirstProxyIterator>().Named("PreOrder");
 
-            //Bind<IProxyAlgorithm>().To<PrintTreeAlgorithm>();
-            Bind<IProxyAlgorithm>().To<InitTreeAlgorithm>();
-            Bind<IProxyAlgorithm>().To<GenerateCfgAlgorithm>();
-            if (_options.ComputeMetrics) Bind<IProxyAlgorithm>().To<MetricCalculatorAlgorithm>();
-            if (_options.GeneratePackageUml) Bind<IProxyAlgorithm>().To<UmlPackageGeneratorAlgorithm>();
-            if (_options.GenerateClassUml) Bind<IProxyAlgorithm>().To<UmlClassGeneratorAlgorithm>();
-            Bind<ICfgAlgorithm>().To<PrintCfgAlgorithm>();
+            //Bind<IAlgorithm>().To<PrintTreeAlgorithm>();
+            Bind<IAlgorithm>().To<InitTreeAlgorithm>();
+            Bind<IAlgorithm>().To<GenerateCfgAlgorithm>();
+            if (_options.ComputeMetrics) Bind<IAlgorithm>().To<MetricCalculatorAlgorithm>();
+            if (_options.GeneratePackageUml) Bind<IAlgorithm>().To<UmlPackageGeneratorAlgorithm>();
+            if (_options.GenerateClassUml) Bind<IAlgorithm>().To<UmlClassGeneratorAlgorithm>();
+            Bind<IAlgorithm>().To<PrintCfgAlgorithm>();
 
             //Bind<TextWriter>().ToConstant(Console.Out).Named("Generic");
             Bind<TextWriter>().ToConstant(new StreamWriter("generic.txt")).Named("Generic");

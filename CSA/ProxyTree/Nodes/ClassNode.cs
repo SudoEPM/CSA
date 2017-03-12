@@ -1,11 +1,8 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using CSA.ProxyTree.Algorithms;
+using CSA.ProxyTree.Visitors.Interfaces;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CSA.ProxyTree.Nodes
@@ -22,7 +19,7 @@ namespace CSA.ProxyTree.Nodes
             NamespaceDepedencies = root.ChildNodes().Where(x => x is UsingDirectiveSyntax).Select(x => ((UsingDirectiveSyntax)x).Name.ToString()).ToList();
         }
 
-        public override void Accept(IProxyAlgorithm algorithm) => algorithm.Apply(this);
+        public override void Accept(IProxyVisitor visitor) => visitor.Apply(this);
 
         public string Namespace { get; }
 

@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CSA.ProxyTree.Algorithms;
 
 namespace CSA.CFG.Algorithms
 {
-    interface ICfgAlgorithm
+    interface ICfgAlgorithm : IAlgorithm
     {
-        void Execute();
-        string Name { get; }
+        //void Execute();
+        //string Name { get; }
     }
 }

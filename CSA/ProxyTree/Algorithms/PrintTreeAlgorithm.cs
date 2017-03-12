@@ -1,75 +1,27 @@
-using System;
-using System.IO;
-using System.Linq;
-using CSA.ProxyTree.Iterators;
-using CSA.ProxyTree.Nodes;
-using CSA.ProxyTree.Nodes.Interfaces;
+﻿using CSA.ProxyTree.Iterators;
+using CSA.ProxyTree.Visitors;
 using Ninject;
 
 namespace CSA.ProxyTree.Algorithms
 {
     class PrintTreeAlgorithm : IProxyAlgorithm
     {
-        private readonly TextWriter _output;
+        private readonly IProxyIterator _iterator;
 
-        public PrintTreeAlgorithm([Named("PreOrder")] IProxyIterator iterator, [Named("Generic")] TextWriter output)
+        public PrintTreeAlgorithm([Named("PreOrder")] IProxyIterator iterator)
         {
-            _output = output;
-            Iterator = iterator;
+            _iterator = iterator;
         }
-
-        public IProxyIterator Iterator { get; }
 
         public string Name => GetType().Name;
 
-        public void Apply(IProxyNode node)
+        public void Execute()
         {
-            int padding = node.Ancestors().Count();
-            //To identify leaf nodes vs nodes with children
-            string prepend = node.Childs.Any() ? "[-]" : "[.]";
-            //Get the type of the node
-            string line = new String(' ', padding) + prepend + " " + node.Kind;
-            _output.WriteLine(line);
-        }
-
-        public void Apply(ClassNode node)
-        {
-            Apply(node as IProxyNode);
-        }
-
-        public void Apply(ForestNode node)
-        {
-            _output.WriteLine("Root");
-        }
-
-        public void Apply(MethodNode node)
-        {
-            Apply(node as IProxyNode);
-        }
-
-        public void Apply(PropertyNode node)
-        {
-            Apply(node as IProxyNode);
-        }
-
-        public void Apply(PropertyAccessorNode node)
-        {
-            Apply(node as IProxyNode);
-        }
-
-        public void Apply(FieldNode node)
-        {
-            Apply(node as IProxyNode);
-        }
-
-        public void Apply(StatementNode node)
-        {
-            Apply(node as IProxyNode);
-        }
-
-        public void Apply(ExpressionNode node)
-        {
-            Apply(node as IProxyNode);
+            var visitor = Program.Kernel.Get<PrintTreeVisitor>();
+            foreach (var node in _iterator.Enumerable)
+            {
+                node.Accept(visitor);
+            }
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CSA.ProxyTree.Nodes;
 using CSA.ProxyTree.Nodes.Interfaces;
 using Ninject;
 
@@ -9,33 +8,51 @@ namespace CSA.ProxyTree.Iterators
 {
     class PreOrderDepthFirstProxyIterator : IProxyIterator
     {
+        public IProxyNode Root { get; }
         private readonly Stack<IProxyNode> _stack;
+        private readonly HashSet<IProxyNode> _visited;
+        public bool SkipStatements { get; set; }
 
-        public PreOrderDepthFirstProxyIterator(Stack<IProxyNode> stack, [Named("Root")] IProxyNode forest, HashSet<Type> nodesToSkip)
+        public PreOrderDepthFirstProxyIterator([Named("Root")] IProxyNode forest, bool skipStatements = false)
         {
-            _stack = stack;
-            NodesToSkip = nodesToSkip;
-            _stack.Clear(); // Just to be sure that ninject didn't do something fishy
-            _stack.Push(forest);
+            _stack = new Stack<IProxyNode>();
+            _visited = new HashSet<IProxyNode>();
+            Root = forest;
+            SkipStatements = skipStatements;
         }
-
-        public HashSet<Type> NodesToSkip { get; }
 
         private bool Accept(IProxyNode node)
         {
-            return !NodesToSkip.Contains(node.GetType());
+            if (SkipStatements && node.Parent is ICallableNode)
+            {
+                return false;
+            }
+
+            return !_visited.Contains(node);
         }
 
-        public IEnumerable<IProxyNode> GetEnumerable()
+        public IEnumerable<IProxyNode> Enumerable
         {
-            while (_stack.Any())
+            get
             {
-                // Find the current element
-                var current = _stack.Pop();
-                // Find the next elements
-                current.Childs.Where(Accept).ToList().ForEach(x => _stack.Push(x));
-                // Return the current
-                yield return current;
+                _stack.Clear();
+                _visited.Clear();
+                _stack.Push(Root);
+
+                while (_stack.Any())
+                {
+                    // Find the current element
+                    var current = _stack.Pop();
+
+                    // Find the next elements
+                    foreach (var x in current.Childs.Where(Accept))
+                    {
+                        _stack.Push(x);
+                        _visited.Add(x);
+                    }
+                    // Return the current
+                    yield return current;
+                }
             }
         }
     }

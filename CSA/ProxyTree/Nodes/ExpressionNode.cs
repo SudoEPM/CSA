@@ -1,4 +1,4 @@
-using CSA.ProxyTree.Algorithms;
+using CSA.ProxyTree.Visitors.Interfaces;
 using Microsoft.CodeAnalysis;
 
 namespace CSA.ProxyTree.Nodes
@@ -9,6 +9,6 @@ namespace CSA.ProxyTree.Nodes
         {
         }
 
-        public override void Accept(IProxyAlgorithm algorithm) => algorithm.Apply(this);
+        public override void Accept(IProxyVisitor visitor) => visitor.Apply(this);
     }
 }

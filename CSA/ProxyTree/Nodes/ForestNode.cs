@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CSA.ProxyTree.Algorithms;
 using CSA.ProxyTree.Nodes.Interfaces;
+using CSA.ProxyTree.Visitors.Interfaces;
 using Microsoft.CodeAnalysis.CSharp;
 
 namespace CSA.ProxyTree.Nodes
@@ -61,6 +61,6 @@ namespace CSA.ProxyTree.Nodes
 
         public IEnumerable<IProxyNode> Ancestors() => Enumerable.Empty<IProxyNode>();
 
-        public void Accept(IProxyAlgorithm algorithm) => algorithm.Apply(this);
+        public void Accept(IProxyVisitor visitor) => visitor.Apply(this);
     }
 }

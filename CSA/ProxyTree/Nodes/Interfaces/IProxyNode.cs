@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using CSA.ProxyTree.Algorithms;
+using CSA.ProxyTree.Visitors.Interfaces;
 using Microsoft.CodeAnalysis.CSharp;
 
 namespace CSA.ProxyTree.Nodes.Interfaces
@@ -17,6 +17,6 @@ namespace CSA.ProxyTree.Nodes.Interfaces
         string FileName { get; }
 
         IEnumerable<IProxyNode> Ancestors();
-        void Accept(IProxyAlgorithm algorithm);
+        void Accept(IProxyVisitor visitor);
     }
 }

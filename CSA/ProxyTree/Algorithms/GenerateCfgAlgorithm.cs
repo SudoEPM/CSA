@@ -4,151 +4,98 @@ using CSA.CFG.Nodes;
 using CSA.ProxyTree.Iterators;
 using CSA.ProxyTree.Nodes;
 using CSA.ProxyTree.Nodes.Interfaces;
+using CSA.ProxyTree.Visitors;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Ninject;
 
 namespace CSA.ProxyTree.Algorithms
 {
     class GenerateCfgAlgorithm : IProxyAlgorithm
     {
+        private readonly IProxyNode _forest;
         private readonly CfgGraph _cfgGraph;
-        private readonly Dictionary<StatementNode, CfgNode> _proxyToCfg; 
 
         public GenerateCfgAlgorithm(
-            [Named("PreOrder")] IProxyIterator iterator,
+            [Named("Root")] IProxyNode forest,
             [Named("CFG")] CfgGraph cfgGraph)
         {
+            _forest = forest;
             _cfgGraph = cfgGraph;
-
-            Iterator = iterator;
-            Iterator.NodesToSkip.Add(typeof (ExpressionNode));
-            _proxyToCfg = new Dictionary<StatementNode, CfgNode>();
         }
 
-        public IProxyIterator Iterator { get; }
         public string Name => GetType().Name;
 
-        public void Apply(MethodNode node)
+        public void Execute()
+        {
+            var methodIterator = new PreOrderDepthFirstProxyIterator(_forest, true);
+
+            // On each method
+            foreach (var node in methodIterator.Enumerable.OfType<ICallableNode>())
+            {
+                // Set root
+                var method = SetRoot(node);
+
+                // Compute next
+                var it = new PreOrderDepthFirstProxyIterator(node, false);
+                var cfgVisitor = new GenerateCfgVisitor(_cfgGraph, method);
+                foreach (var statementNode in it.Enumerable.OfType<StatementNode>())
+                {
+                    statementNode.Accept(cfgVisitor);
+                }
+
+                if (method.Root != null)
+                {
+                    // Compute prec
+                    foreach (var link in method.Root.LinkEnumerator)
+                    {
+                        link.To.Prec.Add(link.From);
+                    }
+
+                    // Clean not needed nodes
+                    RemoveBlocks(method.Root);
+                }
+            }
+        }
+
+        private CfgMethod SetRoot(ICallableNode node)
         {
             var root = node.Childs.OfType<StatementNode>().FirstOrDefault();
-            var cfgRoot = root != null ? GetCfgNode(root) : null;
-            _cfgGraph.CfgMethods[node.Signature] = new CfgMethod(node, cfgRoot);
-        }
-
-        public void Apply(PropertyAccessorNode node)
-        {
-            var root = node.Childs.OfType<StatementNode>().FirstOrDefault();
-            var cfgRoot = root != null ? GetCfgNode(root) : null;
-            _cfgGraph.CfgMethods[node.Signature] = new CfgMethod(node, cfgRoot);
-        }
-
-        CfgNode GetCfgNode(StatementNode node)
-        {
-            if (_proxyToCfg.ContainsKey(node))
-                return _proxyToCfg[node];
-
-            var cfgNode = new CfgNode(node);
-            _proxyToCfg[node] = cfgNode;
-            return cfgNode;
-        }
-
-        public void Apply(StatementNode node)
-        {
-            if (node != null)
+            var cfgRoot = root != null ? _cfgGraph.GetCfgNode(root) : null;
+            CfgNode cfgExit = null;
+            if (cfgRoot != null)
             {
-                int test = 0;
-            }
-            else if (node.Equals("wow"))
-            {
-                int w = 0;
-            }
-            else
-            {
-                int meme = 0;
+                var begin = new CfgNode("Entry");
+                begin.Next.Add(cfgRoot);
+                cfgExit = new CfgNode("Exit");
+                cfgRoot.Next.Add(cfgExit);
+
+                cfgRoot = begin;
             }
 
-            var cfgNode = GetCfgNode(node);
-            switch (node.Kind)
+            var method = new CfgMethod(node, cfgRoot, cfgExit);
+            _cfgGraph.CfgMethods[node.Signature] = method;
+            return method;
+        }
+
+        private void RemoveBlocks(CfgNode root)
+        {
+            // Now we will remove the block nodes
+            var blocks = root.NodeEnumerator.Where(x => x.Kind == SyntaxKind.Block).ToList();
+            foreach (var node in blocks)
             {
-                case SyntaxKind.Block:
+                var nexts = node.Next;
+                var precs = node.Prec;
+                foreach (var prec in precs)
                 {
-                    var currNext = cfgNode.Next;
-                    foreach (var child in Enumerable.Reverse(node.Childs).OfType<StatementNode>())
-                    {
-                        var cfgChild = GetCfgNode(child);
-                        cfgChild.Next.UnionWith(currNext);
-                        currNext = new HashSet<CfgNode> {cfgChild};
-                    }
-
-                    var currPrec = cfgNode.Prec;
-                    foreach (var child in node.Childs.OfType<StatementNode>())
-                    {
-                        var cfgChild = GetCfgNode(child);
-                        cfgChild.Prec.UnionWith(currPrec);
-                        currPrec = new HashSet<CfgNode> {cfgChild};
-                    }
-
-                    var first = node.Childs.OfType<StatementNode>().FirstOrDefault();
-                    if (first != null)
-                    {
-                        var cfgFirst = GetCfgNode(first);
-                        cfgNode.Next.Add(cfgFirst);
-                        cfgFirst.Prec.Add(cfgNode);
-                    }
-                    break;
+                    prec.Next.UnionWith(nexts);
+                    prec.Next.Remove(node);
                 }
-                case SyntaxKind.IfStatement:
+                foreach (var next in nexts)
                 {
-
-                    var nexts = new HashSet<CfgNode>(cfgNode.Next);
-
-                    var cfgInsideIf = GetCfgNode(node.Childs.OfType<StatementNode>().First());
-                    cfgNode.Next.Add(cfgInsideIf);
-                    cfgInsideIf.Next.UnionWith(nexts);
-
-                    // Else is present
-                    if (node.Childs.OfType<StatementNode>().Count() > 1)
-                    {
-                        cfgNode.Next.Clear();
-                        foreach (var next in nexts)
-                        {
-                            next.Prec.Remove(cfgNode);
-                        }
-
-                        var cfgInsideElse = GetCfgNode(node.Childs.OfType<StatementNode>().Last());
-                        cfgNode.Next.Add(cfgInsideElse);
-                        cfgInsideElse.Next.UnionWith(nexts);
-                    }
+                    next.Prec.UnionWith(precs);
+                    next.Prec.Remove(node);
                 }
-                break;
             }
-    }
-
-        public void Apply(ForestNode node)
-        {
         }
-
-        #region Unused visits
-        public void Apply(PropertyNode node)
-        {
-        }
-
-        public void Apply(IProxyNode node)
-        {
-        }
-
-        public void Apply(ClassNode node)
-        {
-        }
-
-        public void Apply(FieldNode node)
-        {
-        }
-
-        public void Apply(ExpressionNode node)
-        {
-        }
-#endregion
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CSA.ProxyTree.Nodes;
 using CSA.ProxyTree.Nodes.Interfaces;
+using CSA.ProxyTree.Nodes.Statements;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -30,15 +31,26 @@ namespace CSA.RoslynWalkers
             _mapTypes[SyntaxKind.StructDeclaration] = typeof(ClassNode);
             _mapTypes[SyntaxKind.InterfaceDeclaration] = typeof(ClassNode);
             _mapTypes[SyntaxKind.FieldDeclaration] = typeof(FieldNode);
-
-            var interfaceType = typeof(IProxyNode).Name;
-            foreach (var type in _mapTypes)
-            {
-                if (type.Value.GetInterface(interfaceType) == null)
-                {
-                    Console.Error.WriteLine(type.Value.Name + " has been mapped has a node, but is not a child of " + interfaceType);
-                }
-            }
+            _mapTypes[SyntaxKind.Block] = typeof(BlockStatementNode);
+            _mapTypes[SyntaxKind.SwitchStatement] = typeof(SwitchStatementNode);
+            _mapTypes[SyntaxKind.SwitchSection] = typeof(SwitchSectionStatementNode);
+            _mapTypes[SyntaxKind.BreakStatement] = typeof(BreakStatementNode);
+            _mapTypes[SyntaxKind.ContinueStatement] = typeof(ContinueStatementNode);
+            _mapTypes[SyntaxKind.YieldBreakStatement] = typeof(YieldBreakStatementNode);
+            _mapTypes[SyntaxKind.YieldReturnStatement] = typeof(YieldReturnStatementNode);
+            _mapTypes[SyntaxKind.ReturnStatement] = typeof(ReturnStatementNode);
+            _mapTypes[SyntaxKind.WhileStatement] = typeof(WhileStatementNode);
+            _mapTypes[SyntaxKind.DoStatement] = typeof(DoStatementNode);
+            _mapTypes[SyntaxKind.ForStatement] = typeof(ForStatementNode);
+            _mapTypes[SyntaxKind.ForEachStatement] = typeof(ForEachStatementNode);
+            _mapTypes[SyntaxKind.GotoStatement] = typeof(GotoStatementNode);
+            _mapTypes[SyntaxKind.GotoDefaultStatement] = typeof(GotoCaseStatementNode);
+            _mapTypes[SyntaxKind.GotoCaseStatement] = typeof(GotoCaseStatementNode);
+            _mapTypes[SyntaxKind.LabeledStatement] = typeof(LabelStatementNode);
+            _mapTypes[SyntaxKind.TryStatement] = typeof(TryStatementNode);
+            _mapTypes[SyntaxKind.CatchClause] = typeof(CatchStatementNode);
+            _mapTypes[SyntaxKind.ThrowStatement] = typeof(ThrowStatementNode);
+            _mapTypes[SyntaxKind.FinallyClause] = typeof(FinallyStatementNode);
         }
 
         public override void Visit(SyntaxNode node)
@@ -54,7 +66,15 @@ namespace CSA.RoslynWalkers
                 // Check if we can convert it to a generic statement or expression
                 if (node is StatementSyntax)
                 {
-                    nodeType = typeof (StatementNode);
+                    var ifNode = node as IfStatementSyntax;
+                    if (ifNode != null)
+                    {
+                        nodeType = ifNode.Else != null ? typeof(IfElseStatementNode) : typeof(IfStatementNode);
+                    }
+                    else
+                    {
+                       nodeType = typeof (StatementNode);
+                    }
                 }
                 else if (node is ExpressionSyntax)
                 {

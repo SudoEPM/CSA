@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CSA.ProxyTree.Nodes;
 using CSA.ProxyTree.Nodes.Interfaces;
 using Ninject;
 
@@ -10,45 +9,61 @@ namespace CSA.ProxyTree.Iterators
     class PostOrderDepthFirstProxyIterator : IProxyIterator
     {
         private readonly Stack<IProxyNode> _stack;
-        private readonly HashSet<IProxyNode> _visited; 
+        private readonly HashSet<IProxyNode> _visited;
 
-        public PostOrderDepthFirstProxyIterator(Stack<IProxyNode> stack, [Named("Root")] IProxyNode forest, HashSet<IProxyNode> visited, HashSet<Type> nodesToSkip)
+        public PostOrderDepthFirstProxyIterator([Named("Root")] IProxyNode root, bool skipStatements = false)
         {
-            _stack = stack;
-            _visited = visited;
-            NodesToSkip = nodesToSkip;
-            _stack.Clear(); // Just to be sure that ninject didn't do something fishy
-            _visited.Clear();
-            _stack.Push(forest);
+            _stack = new Stack<IProxyNode>();
+            _visited = new HashSet<IProxyNode>();
+            Root = root;
+            SkipStatements = skipStatements;
         }
 
-        public HashSet<Type> NodesToSkip { get; }
+        public IProxyNode Root { get; }
+
+        public bool SkipStatements { get; set; }
 
         private bool Accept(IProxyNode node)
         {
-            return !_visited.Contains(node) && !NodesToSkip.Contains(node.GetType());
+            if (SkipStatements && node.Parent is ICallableNode)
+            {
+                return false;
+            }
+
+            return !_visited.Contains(node);
         }
 
-        public IEnumerable<IProxyNode> GetEnumerable()
+        public IEnumerable<IProxyNode> Enumerable
         {
-            while (_stack.Any())
+            get
             {
-                // Find the current element
-                var current = _stack.Peek();
-                // Find the next elements
-                var notVisitedChilds = current.Childs.Where(Accept).ToList();
-                if (notVisitedChilds.Any())
+                _stack.Clear();
+                _visited.Clear();
+
+                _stack.Push(Root);
+                while (_stack.Any())
                 {
-                    notVisitedChilds.ForEach(x => _stack.Push(x));
-                }
-                else
-                {
-                    // Return the current if all childrens have been visited
-                    yield return current;
-                    _visited.Add(current);
-                    _stack.Pop();
+                    // Find the current element
+                    var current = _stack.Peek();
+                    // Find the next elements
+                    var notVisitedChilds = current.Childs.Where(Accept).ToList();
+                    if (notVisitedChilds.Any())
+                    {
+                        notVisitedChilds.ForEach(x => _stack.Push(x));
+                    }
+                    else
+                    {
+                        if(_visited.Contains(current))
+                            continue;
+
+                        // Return the current if all childrens have been visited
+                        yield return current;
+                        _visited.Add(current);
+                        _stack.Pop();
+                    }
                 }
             }
         }
+
     }
 }

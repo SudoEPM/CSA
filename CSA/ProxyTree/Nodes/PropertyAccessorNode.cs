@@ -1,6 +1,6 @@
 using System.Diagnostics;
-using CSA.ProxyTree.Algorithms;
 using CSA.ProxyTree.Nodes.Interfaces;
+using CSA.ProxyTree.Visitors.Interfaces;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -16,7 +16,9 @@ namespace CSA.ProxyTree.Nodes
             IsAutomatic = node.Body == null;
         }
 
-        public override void Accept(IProxyAlgorithm algorithm) => algorithm.Apply(this);
+        public override void Accept(IProxyVisitor visitor) => visitor.Apply(this);
+
+        public string Namespace { get; set; }
 
         public string Name { get; set; }
 
@@ -28,6 +30,6 @@ namespace CSA.ProxyTree.Nodes
 
         public string Protection { get; set; }
 
-        public string Signature => Name + "." + Accessor;
+        public string Signature => $"{Namespace}.{ClassSignature}.{Name}.{Accessor}";
     }
 }

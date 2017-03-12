@@ -126,15 +126,46 @@
     <Compile Include="CFG\Nodes\CfgGraph.cs" />
     <Compile Include="CFG\Nodes\CfgMethod.cs" />
     <Compile Include="CFG\Nodes\CfgNode.cs" />
-    <Compile Include="CSAModule.cs" />
-    <Compile Include="ProgramOptions.cs" />
+    <Compile Include="Options\CSAModule.cs" />
+    <Compile Include="Options\ProgramOptions.cs" />
     <Compile Include="GraphVizExtension\ArrowHead.cs" />
     <Compile Include="GraphVizExtension\GNode.cs" />
-    <Compile Include="ProxyTree\Algorithms\GenerateCfgAlgorithm.cs" />
     <Compile Include="ProxyTree\Algorithms\InitTreeAlgorithm.cs" />
+    <Compile Include="ProxyTree\Algorithms\IProxyAlgorithm.cs" />
+    <Compile Include="ProxyTree\Algorithms\MetricCalculatorAlgorithm.cs" />
     <Compile Include="ProxyTree\Algorithms\PrintTreeAlgorithm.cs" />
     <Compile Include="ProxyTree\Algorithms\UmlClassGeneratorAlgorithm.cs" />
     <Compile Include="ProxyTree\Algorithms\UmlPackageGeneratorAlgorithm.cs" />
+    <Compile Include="ProxyTree\Nodes\Statements\IfElseStatementNode.cs" />
+    <Compile Include="ProxyTree\Nodes\Statements\BlockStatementNode.cs" />
+    <Compile Include="ProxyTree\Nodes\Statements\BreakStatementNode.cs" />
+    <Compile Include="ProxyTree\Nodes\Statements\CatchStatementNode.cs" />
+    <Compile Include="ProxyTree\Nodes\Statements\ContinueStatementNode.cs" />
+    <Compile Include="ProxyTree\Nodes\Statements\DoStatementNode.cs" />
+    <Compile Include="ProxyTree\Nodes\Statements\FinallyStatementNode.cs" />
+    <Compile Include="ProxyTree\Nodes\Statements\ForEachStatementNode.cs" />
+    <Compile Include="ProxyTree\Nodes\Statements\ForStatementNode.cs" />
+    <Compile Include="ProxyTree\Nodes\Statements\GotoCaseStatementNode.cs" />
+    <Compile Include="ProxyTree\Nodes\Statements\GotoStatementNode.cs" />
+    <Compile Include="ProxyTree\Nodes\Statements\IfStatementNode.cs" />
+    <Compile Include="ProxyTree\Nodes\Statements\LabelStatementNode.cs" />
+    <Compile Include="ProxyTree\Nodes\Statements\ReturnStatementNode.cs" />
+    <Compile Include="ProxyTree\Nodes\Statements\SwitchSectionStatementNode.cs" />
+    <Compile Include="ProxyTree\Nodes\Statements\SwitchStatementNode.cs" />
+    <Compile Include="ProxyTree\Nodes\Statements\ThrowStatementNode.cs" />
+    <Compile Include="ProxyTree\Nodes\Statements\TryStatementNode.cs" />
+    <Compile Include="ProxyTree\Nodes\Statements\WhileStatementNode.cs" />
+    <Compile Include="ProxyTree\Nodes\Statements\YieldBreakStatementNode.cs" />
+    <Compile Include="ProxyTree\Nodes\Statements\YieldReturnStatementNode.cs" />
+    <Compile Include="ProxyTree\Visitors\Standards\ApplyDefaultVisitor.cs" />
+    <Compile Include="ProxyTree\Visitors\GenerateCfgVisitor.cs" />
+    <Compile Include="IAlgorithm.cs" />
+    <Compile Include="ProxyTree\Visitors\Standards\DoNothingVisitor.cs" />
+    <Compile Include="ProxyTree\Algorithms\GenerateCfgAlgorithm.cs" />
+    <Compile Include="ProxyTree\Visitors\InitTreeVisitor.cs" />
+    <Compile Include="ProxyTree\Visitors\PrintTreeVisitor.cs" />
+    <Compile Include="ProxyTree\Visitors\UmlClassGeneratorVisitor.cs" />
+    <Compile Include="ProxyTree\Visitors\UmlPackageGeneratorVisitor.cs" />
     <Compile Include="ProxyTree\Iterators\IProxyIterator.cs" />
     <Compile Include="ProxyTree\Iterators\PostOrderDepthFirstProxyIterator.cs" />
     <Compile Include="ProxyTree\Iterators\PreOrderDepthFirstProxyIterator.cs" />
@@ -145,8 +176,8 @@
     <Compile Include="ProxyTree\Nodes\Interfaces\ICallableNode.cs" />
     <Compile Include="ProxyTree\Nodes\Interfaces\IProxyNode.cs" />
     <Compile Include="ProxyTree\Nodes\MethodNode.cs" />
-    <Compile Include="ProxyTree\Algorithms\IProxyAlgorithm.cs" />
-    <Compile Include="ProxyTree\Algorithms\MetricCalculatorAlgorithm.cs" />
+    <Compile Include="ProxyTree\Visitors\Interfaces\IProxyVisitor.cs" />
+    <Compile Include="ProxyTree\Visitors\MetricCalculatorVisitor.cs" />
     <Compile Include="ProxyTree\Nodes\PropertyAccessorNode.cs" />
     <Compile Include="ProxyTree\Nodes\PropertyNode.cs" />
     <Compile Include="ProxyTree\Nodes\StatementNode.cs" />
@@ -158,13 +189,16 @@
     <Compile Include="RoslynWalkers\SyntaxTreeExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
+    <None Include="Options\App.config" />
+    <None Include="Options\packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

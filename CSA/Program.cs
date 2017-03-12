@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CSA.CFG.Algorithms;
-using CSA.ProxyTree.Algorithms;
+using CSA.Options;
 using CSA.ProxyTree.Nodes;
 using CSA.ProxyTree.Nodes.Interfaces;
 using CSA.RoslynWalkers;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.MSBuild;
 using Ninject;
 
@@ -36,25 +33,14 @@ namespace CSA
             Console.WriteLine("Parsing Completed");
 
             // Execute the different algorithms and visits required
-            var algorithms = Kernel.GetAll<IProxyAlgorithm>().ToList();
+            var algorithms = Kernel.GetAll<IAlgorithm>().ToList();
             foreach (var algorithm in algorithms)
             {
-                algorithm.Iterator.GetEnumerable().Where(x => x is MethodNode).Select(x => x.ClassSignature.ToString());
-
                 Console.WriteLine($"{algorithm.Name} : Started!");
-                foreach (var node in algorithm.Iterator.GetEnumerable())
-                {
-                    node.Accept(algorithm);
-                }
-                Console.WriteLine($"{algorithm.Name} : Completed!");
-            }
-
-            var cfgAlgorithms = Kernel.GetAll<ICfgAlgorithm>().ToList();
-            foreach (var algorithm in cfgAlgorithms)
-            {
-                Console.WriteLine($"{algorithm.Name} : Started!");
+                var start = Environment.TickCount;
                 algorithm.Execute();
-                Console.WriteLine($"{algorithm.Name} : Completed!");
+                var timeElapsed = (Environment.TickCount - start)/1000.0;
+                Console.WriteLine($"{algorithm.Name} : Completed in {timeElapsed:0.###} seconds!");
             }
 
             Console.WriteLine("Mission Completed");
@@ -68,10 +54,11 @@ namespace CSA
             var projects = sol.Projects.ToList();
             foreach (var proj in projects)
             {
-                forest.AddRange(proj.Documents.Where(x => x.Name.Contains("GenerateCfg")).Select(doc => doc.GetSyntaxTreeAsync().Result.GenerateProxy()));
+                forest.AddRange(
+                    proj.Documents/*.Where(x => x.Name.Contains("MetricCalc"))*/.Select(
+                        doc => doc.GetSyntaxTreeAsync().Result.GenerateProxy()));
             }
             return new ForestNode(forest);
         }
     }
-
 }
