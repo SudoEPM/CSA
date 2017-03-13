@@ -151,6 +151,11 @@ namespace CSA.ProxyTree.Visitors.Standards
             Apply((IProxyNode) node);
         }
 
+        public virtual void Apply(UsingStatementNode node)
+        {
+            Apply((IProxyNode) node);
+        }
+
         public virtual void Apply(ExpressionNode node)
         {
             Apply((IProxyNode) node);

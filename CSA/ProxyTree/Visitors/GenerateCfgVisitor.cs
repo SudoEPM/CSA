@@ -293,5 +293,17 @@ namespace CSA.ProxyTree.Visitors
             var cfgNode = _cfgGraph.GetCfgNode(node);
             cfgNode.Next.Add(_cfgGraph.GetCfgNode(node.Childs.OfType<StatementNode>().First()));
         }
+
+        public override void Apply(UsingStatementNode node)
+        {
+            var cfgNode = _cfgGraph.GetCfgNode(node);
+
+            // Content
+            var cfgContent = _cfgGraph.GetCfgNode(node.Childs.OfType<StatementNode>().First());
+            cfgContent.Next.UnionWith(cfgNode.Next);
+
+            cfgNode.Next.Clear();
+            cfgNode.Next.Add(cfgContent);
+        }
     }
 }

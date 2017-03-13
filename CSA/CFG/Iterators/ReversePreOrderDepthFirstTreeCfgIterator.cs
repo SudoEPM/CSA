@@ -1,16 +1,16 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using CSA.CFG.Nodes;
 
 namespace CSA.CFG.Iterators
 {
-    class PreOrderDepthFirstCfgIterator : ICfgIterator
+    class ReversePreOrderDepthFirstTreeCfgIterator : ICfgIterator
     {
         private readonly CfgNode _root;
         private readonly Stack<CfgNode> _stack;
         private readonly HashSet<CfgNode> _visited;
 
-        public PreOrderDepthFirstCfgIterator(CfgNode root)
+        public ReversePreOrderDepthFirstTreeCfgIterator(CfgNode root)
         {
             _root = root;
             _stack = new Stack<CfgNode>();
@@ -33,16 +33,13 @@ namespace CSA.CFG.Iterators
                     var current = _stack.Pop();
 
                     // Find the next elements
-                    foreach (var next in current.Next)
+                    foreach (var next in current.Prec.Where(Accept))
                     {
                         // Return the current path
-                        yield return new CfgLink(current, next);
+                        yield return new CfgLink(next, current);
 
-                        if (Accept(next))
-                        {
-                            _stack.Push(next);
-                            _visited.Add(next);
-                        }
+                        _stack.Push(next);
+                        _visited.Add(next);
                     }
                 }
             }
@@ -62,7 +59,7 @@ namespace CSA.CFG.Iterators
                     var current = _stack.Pop();
 
                     // Find the next elements
-                    foreach (var next in current.Next.Where(Accept))
+                    foreach (var next in current.Prec.Where(Accept))
                     {
                         // Return the current path
                         _stack.Push(next);

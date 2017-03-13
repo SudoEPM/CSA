@@ -35,6 +35,7 @@ namespace CSA.ProxyTree.Visitors.Interfaces
         void Apply(CatchStatementNode node);
         void Apply(ThrowStatementNode node);
         void Apply(FinallyStatementNode node);
+        void Apply(UsingStatementNode node);
         void Apply(ExpressionNode node);
     }
 }

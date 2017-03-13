@@ -30,7 +30,9 @@ namespace CSA.Options
             if (_options.ComputeMetrics) Bind<IAlgorithm>().To<MetricCalculatorAlgorithm>();
             if (_options.GeneratePackageUml) Bind<IAlgorithm>().To<UmlPackageGeneratorAlgorithm>();
             if (_options.GenerateClassUml) Bind<IAlgorithm>().To<UmlClassGeneratorAlgorithm>();
-            Bind<IAlgorithm>().To<PrintCfgAlgorithm>();
+            if (_options.PrintCfg) Bind<IAlgorithm>().To<PrintCfgAlgorithm>();
+            if (_options.ComputeDominators) Bind<IAlgorithm>().To<ExtractDomCfgAlgorithm>();
+            if (_options.ComputePostDominators) Bind<IAlgorithm>().To<ExtractPostDomCfgAlgorithm>();
 
             //Bind<TextWriter>().ToConstant(Console.Out).Named("Generic");
             Bind<TextWriter>().ToConstant(new StreamWriter("generic.txt")).Named("Generic");

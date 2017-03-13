@@ -123,6 +123,10 @@ namespace CSA.ProxyTree.Visitors.Standards
         {
         }
 
+        public virtual void Apply(UsingStatementNode node)
+        {
+        }
+
         public virtual void Apply(ExpressionNode node)
         {
         }

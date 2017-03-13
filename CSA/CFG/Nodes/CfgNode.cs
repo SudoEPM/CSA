@@ -38,12 +38,17 @@ namespace CSA.CFG.Nodes
 
         public string UniqueId { get; }
 
-        public string ToDotString()
+        public string ToDotString(bool withLineNumber = false)
         {
-            return _name ?? Origin.ToString().Replace(System.Environment.NewLine, @"\n").Replace("\"", " \\\"");
+            var text = _name ?? Origin.ToString();
+            if (Origin != null && withLineNumber)
+            {
+                text += Environment.NewLine + $"Line: {Origin.LineNumber}";
+            }
+            return text.Replace(System.Environment.NewLine, @"\n").Replace("\"", " \\\"");
         }
 
-        public IEnumerable<CfgNode> NodeEnumerator => (new PreOrderDepthFirstCfgIterator(this)).GetNodeEnumerable();
-        public IEnumerable<CfgLink> LinkEnumerator => (new PreOrderDepthFirstCfgIterator(this)).GetLinkEnumerable();
+        public IEnumerable<CfgNode> NodeEnumerator => (new PreOrderDepthFirstCfgIterator(this)).NodeEnumerable;
+        public IEnumerable<CfgLink> LinkEnumerator => (new PreOrderDepthFirstCfgIterator(this)).LinkEnumerable;
     }
 }

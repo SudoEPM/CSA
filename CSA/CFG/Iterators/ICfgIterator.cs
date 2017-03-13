@@ -17,7 +17,7 @@ namespace CSA.CFG.Iterators
 
     interface ICfgIterator
     {
-        IEnumerable<CfgLink> GetLinkEnumerable();
-        IEnumerable<CfgNode> GetNodeEnumerable();
+        IEnumerable<CfgLink> LinkEnumerable { get; }
+        IEnumerable<CfgNode> NodeEnumerable { get; }
     }
 }

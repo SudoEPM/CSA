@@ -44,25 +44,7 @@ namespace CSA.CFG.Algorithms
                 subGraph.Of(Label.With(method.Key));
                 graph.With(subGraph);
 
-                foreach (var link in method.Value.Root.LinkEnumerator)
-                {
-                    var from = Node.Name(link.From.UniqueId).Of(Label.With(link.From.ToDotString()));
-                    if (link.From.Origin == null)
-                    {
-                        from = from.Of(Shape.Diamond);
-                    }
-
-                    var to = Node.Name(link.To.UniqueId).Of(Label.With(link.To.ToDotString()));
-                    if (link.To.Origin == null)
-                    {
-                        to = to.Of(Shape.Diamond);
-                    }
-
-                    subGraph.With(from);
-                    subGraph.With(to);
-                    subGraph.With(Edge.Between(link.From.UniqueId, link.To.UniqueId));
-                }
-
+                Execute(method.Value, subGraph);
             }
 
             var graphviz = new GraphViz(_graphVizPath, OutputFormat.Png);
@@ -82,6 +64,28 @@ namespace CSA.CFG.Algorithms
             }
 
             System.Diagnostics.Process.Start(_outputFolder);
+        }
+
+        private void Execute(CfgMethod method, Subgraph subGraph)
+        {
+            foreach (var link in method.Root.LinkEnumerator)
+            {
+                var from = Node.Name(link.From.UniqueId).Of(Label.With(link.From.ToDotString()));
+                if (link.From.Origin == null)
+                {
+                    @from = @from.Of(Shape.Diamond);
+                }
+
+                var to = Node.Name(link.To.UniqueId).Of(Label.With(link.To.ToDotString()));
+                if (link.To.Origin == null)
+                {
+                    to = to.Of(Shape.Diamond);
+                }
+
+                subGraph.With(@from);
+                subGraph.With(to);
+                subGraph.With(Edge.Between(link.From.UniqueId, link.To.UniqueId));
+            }
         }
 
         public string Name => GetType().Name;

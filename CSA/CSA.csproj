@@ -119,10 +119,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CFG\Algorithms\ExtractDomCfgAlgorithm.cs" />
+    <Compile Include="CFG\Algorithms\ExtractPostDomCfgAlgorithm.cs" />
     <Compile Include="CFG\Algorithms\ICfgAlgorith,.cs" />
     <Compile Include="CFG\Algorithms\PrintCfgAlgorithm.cs" />
     <Compile Include="CFG\Iterators\ICfgIterator.cs" />
     <Compile Include="CFG\Iterators\PreOrderDepthFirstCfgIterator.cs" />
+    <Compile Include="CFG\Iterators\PreOrderDepthFirstTreeCfgIterator.cs" />
+    <Compile Include="CFG\Iterators\ReversePreOrderDepthFirstTreeCfgIterator.cs" />
     <Compile Include="CFG\Nodes\CfgGraph.cs" />
     <Compile Include="CFG\Nodes\CfgMethod.cs" />
     <Compile Include="CFG\Nodes\CfgNode.cs" />
@@ -136,6 +140,7 @@
     <Compile Include="ProxyTree\Algorithms\PrintTreeAlgorithm.cs" />
     <Compile Include="ProxyTree\Algorithms\UmlClassGeneratorAlgorithm.cs" />
     <Compile Include="ProxyTree\Algorithms\UmlPackageGeneratorAlgorithm.cs" />
+    <Compile Include="ProxyTree\Nodes\Statements\ExpressionAssignmentStatementNode.cs" />
     <Compile Include="ProxyTree\Nodes\Statements\IfElseStatementNode.cs" />
     <Compile Include="ProxyTree\Nodes\Statements\BlockStatementNode.cs" />
     <Compile Include="ProxyTree\Nodes\Statements\BreakStatementNode.cs" />
@@ -149,11 +154,13 @@
     <Compile Include="ProxyTree\Nodes\Statements\GotoStatementNode.cs" />
     <Compile Include="ProxyTree\Nodes\Statements\IfStatementNode.cs" />
     <Compile Include="ProxyTree\Nodes\Statements\LabelStatementNode.cs" />
+    <Compile Include="ProxyTree\Nodes\Statements\LocalDeclarationStatementNode.cs" />
     <Compile Include="ProxyTree\Nodes\Statements\ReturnStatementNode.cs" />
     <Compile Include="ProxyTree\Nodes\Statements\SwitchSectionStatementNode.cs" />
     <Compile Include="ProxyTree\Nodes\Statements\SwitchStatementNode.cs" />
     <Compile Include="ProxyTree\Nodes\Statements\ThrowStatementNode.cs" />
     <Compile Include="ProxyTree\Nodes\Statements\TryStatementNode.cs" />
+    <Compile Include="ProxyTree\Nodes\Statements\UsingStatementNode.cs" />
     <Compile Include="ProxyTree\Nodes\Statements\WhileStatementNode.cs" />
     <Compile Include="ProxyTree\Nodes\Statements\YieldBreakStatementNode.cs" />
     <Compile Include="ProxyTree\Nodes\Statements\YieldReturnStatementNode.cs" />

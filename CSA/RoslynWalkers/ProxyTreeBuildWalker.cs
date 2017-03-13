@@ -51,6 +51,8 @@ namespace CSA.RoslynWalkers
             _mapTypes[SyntaxKind.CatchClause] = typeof(CatchStatementNode);
             _mapTypes[SyntaxKind.ThrowStatement] = typeof(ThrowStatementNode);
             _mapTypes[SyntaxKind.FinallyClause] = typeof(FinallyStatementNode);
+            _mapTypes[SyntaxKind.UsingStatement] = typeof(UsingStatementNode);
+            _mapTypes[SyntaxKind.LocalDeclarationStatement] = typeof(LocalDeclarationStatementNode);
         }
 
         public override void Visit(SyntaxNode node)
@@ -67,9 +69,14 @@ namespace CSA.RoslynWalkers
                 if (node is StatementSyntax)
                 {
                     var ifNode = node as IfStatementSyntax;
+                    var exprNode = node as ExpressionStatementSyntax;
                     if (ifNode != null)
                     {
                         nodeType = ifNode.Else != null ? typeof(IfElseStatementNode) : typeof(IfStatementNode);
+                    }
+                    else if (exprNode?.Expression is AssignmentExpressionSyntax)
+                    {
+                        nodeType = typeof (ExpressionAssignmentStatementNode);
                     }
                     else
                     {

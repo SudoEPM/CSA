@@ -29,6 +29,18 @@ namespace CSA.Options
             HelpText = "Generate the package UML of the solution.")]
         public bool GeneratePackageUml { get; set; }
 
+        [Option("print-cfg", DefaultValue = false,
+            HelpText = "Print the control flow graph of the solution.")]
+        public bool PrintCfg { get; set; }
+
+        [Option("doms", DefaultValue = false,
+            HelpText = "Compute and print the dominators of the solution.")]
+        public bool ComputeDominators { get; set; }
+
+        [Option("post-doms", DefaultValue = false,
+            HelpText = "Compute and print the -postdominators of the solution.")]
+        public bool ComputePostDominators { get; set; }
+
         [Option('p', "prec", DefaultValue = -1,
             HelpText = "Choose the precision of the package generation. (-1 for everything)")]
         public int PackageNesting { get; set; }
