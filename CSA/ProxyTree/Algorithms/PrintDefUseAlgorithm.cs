@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using CSA.ProxyTree.Iterators;
 using CSA.ProxyTree.Nodes;
@@ -31,5 +32,7 @@ namespace CSA.ProxyTree.Algorithms
                 }
             }
         }
+
+        public IList<string> Depedencies => new List<string> { CSA.Artifacts.DefUse, Artifacts.Ast };
     }
 }

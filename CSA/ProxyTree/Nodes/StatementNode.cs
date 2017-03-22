@@ -10,15 +10,18 @@ namespace CSA.ProxyTree.Nodes
 {
     public class StatementNode : BasicProxyNode
     {
-        public StatementNode(SyntaxNode origin, bool analyzeDataFlow = true) : base(origin)
+        public StatementNode(SyntaxNode origin) : base(origin)
         {
             LineNumber = origin.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
+            Model = Program.Kernel.Get<SemanticModel>();
+        }
 
-            if (analyzeDataFlow && origin is StatementSyntax)
+        public virtual void ComputeDefUse()
+        {
+            if (Origin is StatementSyntax)
             {
                 // Analyze data flow
-                var model = Program.Kernel.Get<SemanticModel>();
-                var results = model.AnalyzeDataFlow(origin);
+                var results = Model.AnalyzeDataFlow(Origin);
                 VariablesDefined = results.WrittenInside.Select(x => x.Name).ToImmutableHashSet();
                 VariablesUsed = results.ReadInside.Select(x => x.Name).ToImmutableHashSet();
             }
@@ -29,6 +32,7 @@ namespace CSA.ProxyTree.Nodes
             return Origin.ToString();
         }
 
+        protected SemanticModel Model { get; }
         public int LineNumber { get; }
 
         public ImmutableHashSet<string> VariablesDefined { get; protected set; }

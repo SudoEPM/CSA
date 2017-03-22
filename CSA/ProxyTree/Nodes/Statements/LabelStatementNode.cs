@@ -8,12 +8,15 @@ namespace CSA.ProxyTree.Nodes.Statements
 {
     public class LabelStatementNode : StatementNode
     {
-        public LabelStatementNode(SyntaxNode origin) : base(origin, false)
+        public LabelStatementNode(SyntaxNode origin) : base(origin)
         {
             var stmt = Origin as LabeledStatementSyntax;
             Debug.Assert(stmt != null, "stmt != null");
             Label = stmt.Identifier.Text;
+        }
 
+        public override void ComputeDefUse()
+        {
             VariablesDefined = ImmutableHashSet<string>.Empty;
             VariablesUsed = ImmutableHashSet<string>.Empty;
         }

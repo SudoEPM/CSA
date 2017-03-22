@@ -16,7 +16,10 @@ namespace CSA.ProxyTree.Nodes.Statements
             Debug.Assert(stmt != null, "stmt != null");
 
             Labels = stmt.Labels.Select(x => x.ToString()).ToList();
+        }
 
+        public override void ComputeDefUse()
+        {
             VariablesDefined = ImmutableHashSet<string>.Empty;
             VariablesUsed = ImmutableHashSet<string>.Empty;
         }

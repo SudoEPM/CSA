@@ -6,7 +6,12 @@ namespace CSA.ProxyTree.Nodes.Statements
 {
     public class BlockStatementNode : StatementNode
     {
-        public BlockStatementNode(SyntaxNode origin) : base(origin, false)
+        public BlockStatementNode(SyntaxNode origin) : base(origin)
+        {
+            
+        }
+
+        public override void ComputeDefUse()
         {
             VariablesDefined = ImmutableHashSet<string>.Empty;
             VariablesUsed = ImmutableHashSet<string>.Empty;

@@ -4,20 +4,24 @@ using System.Linq;
 using CSA.ProxyTree.Visitors.Interfaces;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Ninject;
 
 namespace CSA.ProxyTree.Nodes.Statements
 {
     public class SwitchStatementNode : StatementNode
     {
-        public SwitchStatementNode(SyntaxNode origin) : base(origin, false)
+        public SwitchStatementNode(SyntaxNode origin) : base(origin)
         {
             var stmt = Origin as SwitchStatementSyntax;
             Debug.Assert(stmt != null, "stmt != null");
             Expression = stmt.Expression.ToString();
+        }
 
-            var model = Program.Kernel.Get<SemanticModel>();
-            var results = model.AnalyzeDataFlow(stmt.Expression);
+        public override void ComputeDefUse()
+        {
+            var stmt = Origin as SwitchStatementSyntax;
+            Debug.Assert(stmt != null, "stmt != null");
+
+            var results = Model.AnalyzeDataFlow(stmt.Expression);
             // Should be empty...
             VariablesDefined = results.WrittenInside.Select(x => x.Name).ToImmutableHashSet();
             VariablesUsed = results.ReadInside.Select(x => x.Name).ToImmutableHashSet();

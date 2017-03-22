@@ -10,7 +10,7 @@ using Ninject;
 
 namespace CSA.ProxyTree.Algorithms
 {
-    class GenerateCfgAlgorithm : IProxyAlgorithm
+    class GenerateCfgAlgorithm : IProduceArtefactsAlgorithm
     {
         private CfgGraph _cfgGraph;
         public string Name => GetType().Name;
@@ -90,5 +90,8 @@ namespace CSA.ProxyTree.Algorithms
                 }
             }
         }
+
+        public IList<string> Depedencies => new List<string> { CSA.Artifacts.Ast };
+        public IList<string> Artifacts => new List<string> { CSA.Artifacts.Cfg };
     }
 }

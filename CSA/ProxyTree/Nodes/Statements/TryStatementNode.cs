@@ -7,11 +7,14 @@ namespace CSA.ProxyTree.Nodes.Statements
 {
     public class TryStatementNode : StatementNode
     {
-        public TryStatementNode(SyntaxNode origin) : base(origin, false)
+        public TryStatementNode(SyntaxNode origin) : base(origin)
         {
             Catchs = new HashSet<CatchStatementNode>();
             Finally = null;
+        }
 
+        public override void ComputeDefUse()
+        {
             VariablesDefined = ImmutableHashSet<string>.Empty;
             VariablesUsed = ImmutableHashSet<string>.Empty;
         }

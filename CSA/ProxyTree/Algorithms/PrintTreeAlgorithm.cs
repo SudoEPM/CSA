@@ -1,4 +1,5 @@
-﻿using CSA.ProxyTree.Iterators;
+﻿using System.Collections.Generic;
+using CSA.ProxyTree.Iterators;
 using CSA.ProxyTree.Visitors;
 using Ninject;
 
@@ -17,5 +18,7 @@ namespace CSA.ProxyTree.Algorithms
                 node.Accept(visitor);
             }
         }
+
+        public IList<string> Depedencies => new List<string> { CSA.Artifacts.Ast };
     }
 }

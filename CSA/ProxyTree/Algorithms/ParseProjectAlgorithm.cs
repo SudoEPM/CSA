@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.MSBuild;
 
 namespace CSA.ProxyTree.Algorithms
 {
-    class ParseProjectAlgorithm : IProxyAlgorithm
+    class ParseProjectAlgorithm : IProduceArtefactsAlgorithm
     {
         private readonly ProgramOptions _programOptions;
 
@@ -39,5 +39,8 @@ namespace CSA.ProxyTree.Algorithms
             }
             return new ForestNode(forest);
         }
+
+        public IList<string> Depedencies => new List<string>();
+        public IList<string> Artifacts => new List<string> {CSA.Artifacts.ParseTree};
     }
 }

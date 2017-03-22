@@ -8,13 +8,16 @@ namespace CSA.ProxyTree.Nodes.Statements
 {
     public class GotoStatementNode : StatementNode
     {
-        public GotoStatementNode(SyntaxNode origin) : base(origin, false)
+        public GotoStatementNode(SyntaxNode origin) : base(origin)
         {
             var stmt = Origin as GotoStatementSyntax;
             Debug.Assert(stmt != null, "stmt != null");
             Label = stmt.Expression.ToString();
             Target = null;
+        }
 
+        public override void ComputeDefUse()
+        {
             VariablesDefined = ImmutableHashSet<string>.Empty;
             VariablesUsed = ImmutableHashSet<string>.Empty;
         }

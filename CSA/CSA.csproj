@@ -134,6 +134,7 @@
     <Compile Include="Options\ProgramOptions.cs" />
     <Compile Include="GraphVizExtension\ArrowHead.cs" />
     <Compile Include="GraphVizExtension\GNode.cs" />
+    <Compile Include="ProxyTree\Algorithms\ComputeDefUseAlgorithm.cs" />
     <Compile Include="ProxyTree\Algorithms\PrintDefUseAlgorithm.cs" />
     <Compile Include="ProxyTree\Algorithms\InitTreeAlgorithm.cs" />
     <Compile Include="ProxyTree\Algorithms\IProxyAlgorithm.cs" />

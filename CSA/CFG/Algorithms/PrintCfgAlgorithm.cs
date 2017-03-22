@@ -12,13 +12,11 @@ namespace CSA.CFG.Algorithms
 {
     class PrintCfgAlgorithm : ICfgAlgorithm
     {
-        private readonly CfgGraph _cfg;
         private readonly string _outputFolder;
         private readonly string _graphVizPath;
 
-        public PrintCfgAlgorithm([Named("CFG")] CfgGraph graph, ProgramOptions options)
+        public PrintCfgAlgorithm(ProgramOptions options)
         {
-            _cfg = graph;
             _outputFolder = "cfg-graph";
             Directory.CreateDirectory(_outputFolder);
 
@@ -27,9 +25,10 @@ namespace CSA.CFG.Algorithms
 
         public void Execute()
         {
+            var cfg = Program.Kernel.Get<CfgGraph>("CFG");
             var classGraphs = new Dictionary<string, GraphBase>();
 
-            foreach (var method in _cfg.CfgMethods.Where(x => x.Value.Root != null))
+            foreach (var method in cfg.CfgMethods.Where(x => x.Value.Root != null))
             {
                 GraphBase graph;
                 if (!classGraphs.ContainsKey(method.Value.ClassSignature))
@@ -89,5 +88,7 @@ namespace CSA.CFG.Algorithms
         }
 
         public string Name => GetType().Name;
+
+        public IList<string> Depedencies => new List<string> { CSA.Artifacts.Cfg };
     }
 }

@@ -8,14 +8,17 @@ namespace CSA.ProxyTree.Nodes.Statements
 {
     public class GotoCaseStatementNode : StatementNode
     {
-        public GotoCaseStatementNode(SyntaxNode origin) : base(origin, false)
+        public GotoCaseStatementNode(SyntaxNode origin) : base(origin)
         {
             var stmt = Origin as GotoStatementSyntax;
             Debug.Assert(stmt != null, "stmt != null");
             Case = stmt.CaseOrDefaultKeyword.ToString() == "case"
                 ? $"case {stmt.Expression}:"
                 : "default:";
+        }
 
+        public override void ComputeDefUse()
+        {
             VariablesDefined = ImmutableHashSet<string>.Empty;
             VariablesUsed = ImmutableHashSet<string>.Empty;
         }

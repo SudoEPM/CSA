@@ -10,15 +10,20 @@ namespace CSA.ProxyTree.Nodes.Statements
 {
     public class DoStatementNode : StatementNode
     {
-        public DoStatementNode(SyntaxNode origin) : base(origin, false)
+        public DoStatementNode(SyntaxNode origin) : base(origin)
         {
             var stmt = Origin as DoStatementSyntax;
             Debug.Assert(stmt != null, "stmt != null");
             Condition = stmt.Condition.ToString();
+        }
+
+        public override void ComputeDefUse()
+        {
+            var stmt = Origin as DoStatementSyntax;
+            Debug.Assert(stmt != null, "stmt != null");
 
             // Analyze data flow
-            var model = Program.Kernel.Get<SemanticModel>();
-            var results = model.AnalyzeDataFlow(origin);
+            var results = Model.AnalyzeDataFlow(stmt.Condition);
             VariablesDefined = ImmutableHashSet<string>.Empty;
             VariablesUsed = results.ReadInside.Select(x => x.Name).ToImmutableHashSet();
         }
