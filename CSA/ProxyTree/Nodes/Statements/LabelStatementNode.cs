@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Diagnostics;
 using CSA.ProxyTree.Visitors.Interfaces;
 using Microsoft.CodeAnalysis;
@@ -7,11 +8,14 @@ namespace CSA.ProxyTree.Nodes.Statements
 {
     public class LabelStatementNode : StatementNode
     {
-        public LabelStatementNode(SyntaxNode origin) : base(origin)
+        public LabelStatementNode(SyntaxNode origin) : base(origin, false)
         {
             var stmt = Origin as LabeledStatementSyntax;
             Debug.Assert(stmt != null, "stmt != null");
             Label = stmt.Identifier.Text;
+
+            VariablesDefined = ImmutableHashSet<string>.Empty;
+            VariablesUsed = ImmutableHashSet<string>.Empty;
         }
 
         public override string ToString()

@@ -10,8 +10,6 @@ namespace CSA.ProxyTree.Nodes.Interfaces
         SyntaxKind Kind { get; }
 
         IProxyNode Parent { get; set; }
-        IProxyNode Left { get; }
-        IProxyNode Right { get; }
 
         string ClassSignature { get; set; }
         string FileName { get; }

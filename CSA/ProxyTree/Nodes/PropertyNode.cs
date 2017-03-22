@@ -17,6 +17,13 @@ namespace CSA.ProxyTree.Nodes
 
             switch (Kind)
             {
+                case SyntaxKind.EventDeclaration:
+                    {
+                        var org = Origin as EventDeclarationSyntax;
+                        Debug.Assert(org != null, "org != null");
+                        Signature = org.Identifier.ToString();
+                    }
+                    break;
                 case SyntaxKind.PropertyDeclaration:
                     {
                         var org = Origin as PropertyDeclarationSyntax;

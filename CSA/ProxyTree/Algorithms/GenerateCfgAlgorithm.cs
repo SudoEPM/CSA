@@ -12,22 +12,15 @@ namespace CSA.ProxyTree.Algorithms
 {
     class GenerateCfgAlgorithm : IProxyAlgorithm
     {
-        private readonly IProxyNode _forest;
-        private readonly CfgGraph _cfgGraph;
-
-        public GenerateCfgAlgorithm(
-            [Named("Root")] IProxyNode forest,
-            [Named("CFG")] CfgGraph cfgGraph)
-        {
-            _forest = forest;
-            _cfgGraph = cfgGraph;
-        }
-
+        private CfgGraph _cfgGraph;
         public string Name => GetType().Name;
 
         public void Execute()
         {
-            var methodIterator = new PreOrderDepthFirstProxyIterator(_forest, true);
+            var forest = Program.Kernel.Get<IProxyNode>("Root");
+            _cfgGraph = Program.Kernel.Get<CfgGraph>("CFG");
+
+            var methodIterator = new PreOrderDepthFirstProxyIterator(forest, true);
 
             // On each method
             foreach (var node in methodIterator.Enumerable.OfType<ICallableNode>())

@@ -1,4 +1,3 @@
-using CSA.ProxyTree.Nodes;
 using CSA.ProxyTree.Nodes.Interfaces;
 using Microsoft.CodeAnalysis;
 using Ninject;
@@ -13,10 +12,12 @@ namespace CSA.RoslynWalkers
             writer.Visit(tree.GetRoot());
         }
 
-        public static IProxyNode GenerateProxy(this SyntaxTree tree)
+        public static IProxyNode GenerateProxy(this SyntaxTree tree, SemanticModel model)
         {
             var writer = Program.Kernel.Get<ProxyTreeBuildWalker>();
+            Program.Kernel.Bind<SemanticModel>().ToConstant(model);
             writer.Visit(tree.GetRoot());
+            Program.Kernel.Unbind<SemanticModel>();
             return writer.Root;
         }
     }

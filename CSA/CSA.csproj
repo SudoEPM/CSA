@@ -134,13 +134,14 @@
     <Compile Include="Options\ProgramOptions.cs" />
     <Compile Include="GraphVizExtension\ArrowHead.cs" />
     <Compile Include="GraphVizExtension\GNode.cs" />
+    <Compile Include="ProxyTree\Algorithms\PrintDefUseAlgorithm.cs" />
     <Compile Include="ProxyTree\Algorithms\InitTreeAlgorithm.cs" />
     <Compile Include="ProxyTree\Algorithms\IProxyAlgorithm.cs" />
     <Compile Include="ProxyTree\Algorithms\MetricCalculatorAlgorithm.cs" />
+    <Compile Include="ProxyTree\Algorithms\ParseProjectAlgorithm.cs" />
     <Compile Include="ProxyTree\Algorithms\PrintTreeAlgorithm.cs" />
     <Compile Include="ProxyTree\Algorithms\UmlClassGeneratorAlgorithm.cs" />
     <Compile Include="ProxyTree\Algorithms\UmlPackageGeneratorAlgorithm.cs" />
-    <Compile Include="ProxyTree\Nodes\Statements\ExpressionAssignmentStatementNode.cs" />
     <Compile Include="ProxyTree\Nodes\Statements\IfElseStatementNode.cs" />
     <Compile Include="ProxyTree\Nodes\Statements\BlockStatementNode.cs" />
     <Compile Include="ProxyTree\Nodes\Statements\BreakStatementNode.cs" />
@@ -154,7 +155,6 @@
     <Compile Include="ProxyTree\Nodes\Statements\GotoStatementNode.cs" />
     <Compile Include="ProxyTree\Nodes\Statements\IfStatementNode.cs" />
     <Compile Include="ProxyTree\Nodes\Statements\LabelStatementNode.cs" />
-    <Compile Include="ProxyTree\Nodes\Statements\LocalDeclarationStatementNode.cs" />
     <Compile Include="ProxyTree\Nodes\Statements\ReturnStatementNode.cs" />
     <Compile Include="ProxyTree\Nodes\Statements\SwitchSectionStatementNode.cs" />
     <Compile Include="ProxyTree\Nodes\Statements\SwitchStatementNode.cs" />

@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using CSA.Options;
-using CSA.ProxyTree.Nodes;
-using CSA.ProxyTree.Nodes.Interfaces;
-using CSA.RoslynWalkers;
-using Microsoft.CodeAnalysis.MSBuild;
 using Ninject;
 
 namespace CSA
@@ -27,11 +22,6 @@ namespace CSA
             Kernel = new StandardKernel(new CsaModule(options));
             Kernel.Bind<ProgramOptions>().ToMethod(x => options);
 
-            // Parse the solution
-            var forest = ParseForest(options.TestMode ? options.DebugSolution : options.Solution);
-            Kernel.Bind<IProxyNode>().ToMethod(x => forest).Named("Root");
-            Console.WriteLine("Parsing Completed");
-
             // Execute the different algorithms and visits required
             var algorithms = Kernel.GetAll<IAlgorithm>().ToList();
             foreach (var algorithm in algorithms)
@@ -44,21 +34,6 @@ namespace CSA
             }
 
             Console.WriteLine("Mission Completed");
-        }
-
-        private static IProxyNode ParseForest(string filepath)
-        {
-            var workspace = MSBuildWorkspace.Create();
-            var sol = workspace.OpenSolutionAsync(filepath).Result;
-            var forest = new List<IProxyNode>();
-            var projects = sol.Projects.ToList();
-            foreach (var proj in projects)
-            {
-                forest.AddRange(
-                    proj.Documents/*.Where(x => x.Name.Contains("MetricCalc"))*/.Select(
-                        doc => doc.GetSyntaxTreeAsync().Result.GenerateProxy()));
-            }
-            return new ForestNode(forest);
         }
     }
 }

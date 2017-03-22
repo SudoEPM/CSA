@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Diagnostics;
 using CSA.ProxyTree.Visitors.Interfaces;
 using Microsoft.CodeAnalysis;
@@ -7,13 +8,16 @@ namespace CSA.ProxyTree.Nodes.Statements
 {
     public class GotoCaseStatementNode : StatementNode
     {
-        public GotoCaseStatementNode(SyntaxNode origin) : base(origin)
+        public GotoCaseStatementNode(SyntaxNode origin) : base(origin, false)
         {
             var stmt = Origin as GotoStatementSyntax;
             Debug.Assert(stmt != null, "stmt != null");
             Case = stmt.CaseOrDefaultKeyword.ToString() == "case"
                 ? $"case {stmt.Expression}:"
                 : "default:";
+
+            VariablesDefined = ImmutableHashSet<string>.Empty;
+            VariablesUsed = ImmutableHashSet<string>.Empty;
         }
 
         public string Case { get; }

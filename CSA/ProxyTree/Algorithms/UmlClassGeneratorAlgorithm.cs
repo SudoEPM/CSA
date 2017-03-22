@@ -6,20 +6,14 @@ namespace CSA.ProxyTree.Algorithms
 {
     class UmlClassGeneratorAlgorithm : IProxyAlgorithm
     {
-        private readonly IProxyIterator _iterator;
-
-        public UmlClassGeneratorAlgorithm([Named("PostOrder")] IProxyIterator iterator)
-        {
-            _iterator = iterator;
-            _iterator.SkipStatements = true;
-        }
-
         public string Name => GetType().Name;
 
         public void Execute()
         {
+            var iterator = Program.Kernel.Get<IProxyIterator>("PostOrder");
+            iterator.SkipStatements = true;
             var visitor = Program.Kernel.Get<UmlClassGeneratorVisitor>();
-            foreach (var node in _iterator.Enumerable)
+            foreach (var node in iterator.Enumerable)
             {
                 node.Accept(visitor);
             }

@@ -24,8 +24,10 @@ namespace CSA.Options
             Bind<IProxyIterator>().To<PostOrderDepthFirstProxyIterator>().Named("PostOrder");
             Bind<IProxyIterator>().To<PreOrderDepthFirstProxyIterator>().Named("PreOrder");
 
+            Bind<IAlgorithm>().To<ParseProjectAlgorithm>();
             //Bind<IAlgorithm>().To<PrintTreeAlgorithm>();
             Bind<IAlgorithm>().To<InitTreeAlgorithm>();
+            Bind<IAlgorithm>().To<PrintDefUseAlgorithm>();
             Bind<IAlgorithm>().To<GenerateCfgAlgorithm>();
             if (_options.ComputeMetrics) Bind<IAlgorithm>().To<MetricCalculatorAlgorithm>();
             if (_options.GeneratePackageUml) Bind<IAlgorithm>().To<UmlPackageGeneratorAlgorithm>();

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using CSA.ProxyTree.Visitors.Interfaces;
@@ -15,6 +16,9 @@ namespace CSA.ProxyTree.Nodes.Statements
             Debug.Assert(stmt != null, "stmt != null");
 
             Labels = stmt.Labels.Select(x => x.ToString()).ToList();
+
+            VariablesDefined = ImmutableHashSet<string>.Empty;
+            VariablesUsed = ImmutableHashSet<string>.Empty;
         }
 
         public List<string> Labels { get; }
