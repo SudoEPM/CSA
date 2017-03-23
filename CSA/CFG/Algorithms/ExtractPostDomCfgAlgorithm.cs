@@ -11,7 +11,7 @@ using Ninject;
 
 namespace CSA.CFG.Algorithms
 {
-    class ExtractPostDomCfgAlgorithm : ICfgAlgorithm
+    class ExtractPostDomCfgAlgorithm : IAlgorithm
     {
         private readonly string _outputFolder;
         private readonly string _graphVizPath;
@@ -117,6 +117,9 @@ namespace CSA.CFG.Algorithms
             {
                 var child = domLink.Key;
                 var parent = domLink.Value;
+
+                if(parent == null)
+                    continue;
 
                 var from = Node.Name(parent.UniqueId).Of(Label.With(parent.ToDotString(true)));
                 if (parent.Origin == null)

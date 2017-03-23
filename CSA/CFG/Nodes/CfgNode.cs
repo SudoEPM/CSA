@@ -41,9 +41,20 @@ namespace CSA.CFG.Nodes
         public string ToDotString(bool withLineNumber = false)
         {
             var text = _name ?? Origin.ToString();
+            text += Environment.NewLine + $"UniqueId: {UniqueId}";
             if (Origin != null && withLineNumber)
             {
                 text += Environment.NewLine + $"Line: {Origin.LineNumber}";
+            }
+            return text.Replace(System.Environment.NewLine, @"\n").Replace("\"", " \\\"");
+        }
+
+        public string ToDotString(string more, bool withLineNumber = false)
+        {
+            var text = ToDotString(withLineNumber);
+            if (more != null)
+            {
+                text += Environment.NewLine + more;
             }
             return text.Replace(System.Environment.NewLine, @"\n").Replace("\"", " \\\"");
         }

@@ -53,8 +53,11 @@ namespace CSA.ProxyTree.Iterators
                     }
                     else
                     {
-                        if(_visited.Contains(current))
+                        if (_visited.Contains(current))
+                        {
+                            _stack.Pop();
                             continue;
+                        }
 
                         // Return the current if all childrens have been visited
                         yield return current;

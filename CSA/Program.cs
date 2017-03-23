@@ -83,7 +83,10 @@ namespace CSA
                 else
                 {
                     if (visited.Contains(current))
+                    {
+                        stack.Pop();
                         continue;
+                    }
 
                     // Return the current if all childrens have been visited
                     yield return current;

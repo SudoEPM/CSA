@@ -11,7 +11,7 @@ using Ninject;
 
 namespace CSA.CFG.Algorithms
 {
-    class ExtractDomCfgAlgorithm : ICfgAlgorithm
+    class ExtractDomCfgAlgorithm : IAlgorithm
     {
         private readonly string _outputFolder;
         private readonly string _graphVizPath;

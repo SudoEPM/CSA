@@ -1,9 +1,7 @@
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using CSA.ProxyTree.Visitors.Interfaces;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Ninject;
 
 namespace CSA.ProxyTree.Nodes
@@ -18,13 +16,10 @@ namespace CSA.ProxyTree.Nodes
 
         public virtual void ComputeDefUse()
         {
-            if (Origin is StatementSyntax)
-            {
-                // Analyze data flow
-                var results = Model.AnalyzeDataFlow(Origin);
-                VariablesDefined = results.WrittenInside.Select(x => x.Name).ToImmutableHashSet();
-                VariablesUsed = results.ReadInside.Select(x => x.Name).ToImmutableHashSet();
-            }
+            // Analyze data flow
+            var results = Model.AnalyzeDataFlow(Origin);
+            VariablesDefined = results.WrittenInside.Select(x => x.Name).ToImmutableHashSet();
+            VariablesUsed = results.ReadInside.Select(x => x.Name).ToImmutableHashSet();
         }
 
         public override string ToString()

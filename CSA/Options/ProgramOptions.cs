@@ -38,8 +38,12 @@ namespace CSA.Options
         public bool ComputeDominators { get; set; }
 
         [Option("post-doms", DefaultValue = false,
-            HelpText = "Compute and print the -postdominators of the solution.")]
+            HelpText = "Compute and print the post-dominators of the solution.")]
         public bool ComputePostDominators { get; set; }
+
+        [Option("reach-defs", DefaultValue = false,
+            HelpText = "Compute and print the reaching-definitions of the solution.")]
+        public bool ComputeReachingDefinitions { get; set; }
 
         [Option('p', "prec", DefaultValue = -1,
             HelpText = "Choose the precision of the package generation. (-1 for everything)")]

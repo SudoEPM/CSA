@@ -121,8 +121,10 @@
   <ItemGroup>
     <Compile Include="CFG\Algorithms\ExtractDomCfgAlgorithm.cs" />
     <Compile Include="CFG\Algorithms\ExtractPostDomCfgAlgorithm.cs" />
-    <Compile Include="CFG\Algorithms\ICfgAlgorith,.cs" />
+    <Compile Include="CFG\Algorithms\FixPointResult.cs" />
     <Compile Include="CFG\Algorithms\PrintCfgAlgorithm.cs" />
+    <Compile Include="CFG\Algorithms\PrintCfgWithReachingDefsAlgorithm.cs" />
+    <Compile Include="CFG\Algorithms\ReachingDefinitionsAlgorithm.cs" />
     <Compile Include="CFG\Iterators\ICfgIterator.cs" />
     <Compile Include="CFG\Iterators\PreOrderDepthFirstCfgIterator.cs" />
     <Compile Include="CFG\Iterators\PreOrderDepthFirstTreeCfgIterator.cs" />

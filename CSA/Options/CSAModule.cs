@@ -25,13 +25,14 @@ namespace CSA.Options
             Bind<IProxyIterator>().To<PreOrderDepthFirstProxyIterator>().Named("PreOrder");
 
             //Bind<IAlgorithm>().To<PrintTreeAlgorithm>();
-            Bind<IAlgorithm>().To<PrintDefUseAlgorithm>();
+            //Bind<IAlgorithm>().To<PrintDefUseAlgorithm>();
             if (_options.ComputeMetrics) Bind<IAlgorithm>().To<MetricCalculatorAlgorithm>();
             if (_options.GeneratePackageUml) Bind<IAlgorithm>().To<UmlPackageGeneratorAlgorithm>();
             if (_options.GenerateClassUml) Bind<IAlgorithm>().To<UmlClassGeneratorAlgorithm>();
             if (_options.PrintCfg) Bind<IAlgorithm>().To<PrintCfgAlgorithm>();
             if (_options.ComputeDominators) Bind<IAlgorithm>().To<ExtractDomCfgAlgorithm>();
             if (_options.ComputePostDominators) Bind<IAlgorithm>().To<ExtractPostDomCfgAlgorithm>();
+            if (_options.ComputeReachingDefinitions) Bind<IAlgorithm>().To<PrintCfgWithReachingDefsAlgorithm>();
 
             //Bind<TextWriter>().ToConstant(Console.Out).Named("Generic");
             Bind<TextWriter>().ToConstant(new StreamWriter("generic.txt")).Named("Generic");
