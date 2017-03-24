@@ -33,6 +33,7 @@ namespace CSA.Options
             if (_options.ComputeDominators) Bind<IAlgorithm>().To<ExtractDomCfgAlgorithm>();
             if (_options.ComputePostDominators) Bind<IAlgorithm>().To<ExtractPostDomCfgAlgorithm>();
             if (_options.ComputeReachingDefinitions) Bind<IAlgorithm>().To<PrintCfgWithReachingDefsAlgorithm>();
+            if (_options.ComputeLiveVariables) Bind<IAlgorithm>().To<PrintCfgWithLiveVariablesAlgorithm>();
 
             //Bind<TextWriter>().ToConstant(Console.Out).Named("Generic");
             Bind<TextWriter>().ToConstant(new StreamWriter("generic.txt")).Named("Generic");

@@ -9,6 +9,7 @@ namespace CSA
         public static string Cfg => "CFG";
         public static string DefUse => "DefUse";
         public static string ReachingDefinitions => "ReachingDefinitions";
+        public static string LiveVariables => "LiveVariables";
     }
 
     public interface IProduceArtefactsAlgorithm : IAlgorithm

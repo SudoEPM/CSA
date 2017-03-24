@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Immutable;
 
-namespace CSA.CFG.Algorithms
+namespace CSA.FixPoint
 {
     class FixPointResult
     {

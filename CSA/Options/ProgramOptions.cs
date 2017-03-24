@@ -45,6 +45,10 @@ namespace CSA.Options
             HelpText = "Compute and print the reaching-definitions of the solution.")]
         public bool ComputeReachingDefinitions { get; set; }
 
+        [Option("lives", DefaultValue = false,
+            HelpText = "Compute and print the lives variables of the solution.")]
+        public bool ComputeLiveVariables { get; set; }
+        
         [Option('p', "prec", DefaultValue = -1,
             HelpText = "Choose the precision of the package generation. (-1 for everything)")]
         public int PackageNesting { get; set; }

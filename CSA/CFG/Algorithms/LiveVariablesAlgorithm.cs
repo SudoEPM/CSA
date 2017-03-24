@@ -8,9 +8,9 @@ using Ninject;
 
 namespace CSA.CFG.Algorithms
 {
-    class ReachingDefinitions
+    class LiveVariables
     {
-        public ReachingDefinitions()
+        public LiveVariables()
         {
             Values = new Dictionary<CfgNode, FixPointResult>();
         }
@@ -30,38 +30,11 @@ namespace CSA.CFG.Algorithms
         public Dictionary<CfgNode, FixPointResult> Values { get; private set; }
     }
 
-    class ReachingDefinitionsFixPoint : FixPointAnalysis
+    class LiveVariablesFixPoint : FixPointAnalysis
     {
-        protected override bool IsForward => true;
+        protected override bool IsForward => false;
         protected override bool RecomputeGenKill => false;
         protected override MeetOperatorType MeetOperator => MeetOperatorType.Union;
-
-        private readonly Dictionary<string, HashSet<CfgNode>> _definitions;
-
-        public ReachingDefinitionsFixPoint()
-        {
-            _definitions = new Dictionary<string, HashSet<CfgNode>>();
-        }
-
-        protected override void Init(IEnumerable<IFixPointAnalyzableNode> nodes)
-        {
-            foreach (var fixPointAnalyzableNode in nodes)
-            {
-                var node = (CfgNode) fixPointAnalyzableNode;
-                if (node.Origin == null)
-                    continue;
-
-                foreach (var variable in node.Origin.VariablesDefined)
-                {
-                    if (!_definitions.ContainsKey(variable))
-                    {
-                        _definitions[variable] = new HashSet<CfgNode>();
-                    }
-
-                    _definitions[variable].Add(node);
-                }
-            }
-        }
 
         protected override FixPointResult Init(IFixPointAnalyzableNode node)
         {
@@ -69,8 +42,8 @@ namespace CSA.CFG.Algorithms
             var cfgNode = (CfgNode) node;
             if (cfgNode.Origin != null)
             {
-                data.Gen = cfgNode.Origin.VariablesDefined.Select(x => $"d{cfgNode.UniqueId}-{x}").ToImmutableHashSet();
-                data.Kill = cfgNode.Origin.VariablesDefined.SelectMany(variable => _definitions[variable].Select(def => $"d{def.UniqueId}-{variable}")).ToImmutableHashSet();
+                data.Gen = cfgNode.Origin.VariablesUsed.ToImmutableHashSet();
+                data.Kill = cfgNode.Origin.VariablesDefined.ToImmutableHashSet();
             }
             
             return data;
@@ -82,14 +55,14 @@ namespace CSA.CFG.Algorithms
         }
     }
 
-    class ReachingDefinitionsAlgorithm : IProduceArtefactsAlgorithm
+    class LiveVariablesAlgorithm : IProduceArtefactsAlgorithm
     {
         public void Execute()
         {
             var cfg = Program.Kernel.Get<CfgGraph>("CFG");
             
-            var results = new ReachingDefinitions();
-            var fixPoint = new ReachingDefinitionsFixPoint();
+            var results = new LiveVariables();
+            var fixPoint = new LiveVariablesFixPoint();
             foreach (var method in cfg.CfgMethods.Where(x => x.Value.Root != null))
             {
                 var methodResults = fixPoint.Execute(method.Value.Root.NodeEnumerator);
@@ -99,7 +72,7 @@ namespace CSA.CFG.Algorithms
                 }
             }
 
-            Program.Kernel.Bind<ReachingDefinitions>().ToConstant(results);
+            Program.Kernel.Bind<LiveVariables>().ToConstant(results);
         }
 
         uint fib(uint n)
@@ -126,7 +99,7 @@ namespace CSA.CFG.Algorithms
 
         public string Name => GetType().Name;
 
-        public IList<string> Artifacts => new List<string> { CSA.Artifacts.ReachingDefinitions };
+        public IList<string> Artifacts => new List<string> { CSA.Artifacts.LiveVariables };
         public IList<string> Depedencies => new List<string> { CSA.Artifacts.Cfg, CSA.Artifacts.DefUse };
     }
 }

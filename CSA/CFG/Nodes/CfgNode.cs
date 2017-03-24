@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using CSA.CFG.Algorithms;
 using CSA.CFG.Iterators;
+using CSA.FixPoint;
 using CSA.ProxyTree.Nodes;
 using Microsoft.CodeAnalysis.CSharp;
 
 namespace CSA.CFG.Nodes
 {
-    public class CfgNode
+    public class CfgNode : IFixPointAnalyzableNode
     {
         private readonly string _name;
         private static int _instance = 0;
@@ -61,5 +63,8 @@ namespace CSA.CFG.Nodes
 
         public IEnumerable<CfgNode> NodeEnumerator => (new PreOrderDepthFirstCfgIterator(this)).NodeEnumerable;
         public IEnumerable<CfgLink> LinkEnumerator => (new PreOrderDepthFirstCfgIterator(this)).LinkEnumerable;
+
+        IEnumerable<IFixPointAnalyzableNode> IFixPointAnalyzableNode.Prec() => Prec;
+        IEnumerable<IFixPointAnalyzableNode> IFixPointAnalyzableNode.Succ() => Next;
     }
 }
