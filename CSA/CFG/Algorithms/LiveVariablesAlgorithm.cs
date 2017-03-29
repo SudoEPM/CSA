@@ -51,7 +51,7 @@ namespace CSA.CFG.Algorithms
 
         protected override ImmutableHashSet<string> TransferFunction(IFixPointAnalyzableNode node, FixPointResult data)
         {
-            return data.Gen.Union(data.In.Except(data.Kill)); ;
+            return data.Gen.Union(data.Out.Except(data.Kill)); ;
         }
     }
 
