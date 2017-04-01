@@ -10,6 +10,9 @@ namespace CSA
         public static string DefUse => "DefUse";
         public static string ReachingDefinitions => "ReachingDefinitions";
         public static string LiveVariables => "LiveVariables";
+        public static string DomTree => "DomTree";
+        public static string PostDomTree => "PostDomTree";
+        public static string ControlDepedency => "ControlDepedency";
     }
 
     public interface IProduceArtefactsAlgorithm : IAlgorithm

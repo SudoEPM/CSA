@@ -286,6 +286,9 @@ namespace CSA.ProxyTree.Visitors
         {
             var cfgNode = _cfgGraph.GetCfgNode(node);
             cfgNode.Next.Clear();
+
+            // It's a bad management, but...
+            cfgNode.Next.Add(_current.Exit);
         }
 
         public override void Apply(FinallyStatementNode node)

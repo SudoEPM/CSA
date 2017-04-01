@@ -62,7 +62,11 @@ namespace CSA.ProxyTree.Algorithms
                 cfgExit = new CfgNode("Exit");
                 cfgRoot.Next.Add(cfgExit);
 
-                cfgRoot = begin;
+                var system = new CfgNode("System");
+                system.Next.Add(begin);
+                system.Next.Add(cfgExit);
+
+                cfgRoot = system;
             }
 
             var method = new CfgMethod(node, cfgRoot, cfgExit);

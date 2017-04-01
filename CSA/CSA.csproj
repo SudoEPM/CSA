@@ -119,10 +119,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CFG\Algorithms\ExtractDomCfgAlgorithm.cs" />
-    <Compile Include="CFG\Algorithms\ExtractPostDomCfgAlgorithm.cs" />
+    <Compile Include="CFG\Algorithms\ControlDepecencyAlgorithm.cs" />
+    <Compile Include="CFG\Algorithms\DomTreeAlgorithm.cs" />
+    <Compile Include="CFG\Algorithms\PostDomAlgorithm.cs" />
     <Compile Include="CFG\Algorithms\LiveVariablesAlgorithm.cs" />
     <Compile Include="CFG\Algorithms\PrintCfgWithLiveVariablesAlgorithm.cs" />
+    <Compile Include="CFG\Algorithms\PrintControlDepedencyAlgorithm.cs" />
+    <Compile Include="CFG\Algorithms\PrintDomTreeAlgorithm.cs" />
+    <Compile Include="CFG\Algorithms\PrintPostDomTreeAlgorithm.cs" />
+    <Compile Include="CFG\Nodes\DomTree.cs" />
+    <Compile Include="CFG\Nodes\ForestDomTree.cs" />
+    <Compile Include="CFG\Nodes\IDomTree.cs" />
+    <Compile Include="CFG\Nodes\PostDomTree.cs" />
     <Compile Include="FixPoint\IFixPointAnalyzableNode.cs" />
     <Compile Include="FixPoint\FixPointAnalysis.cs" />
     <Compile Include="FixPoint\FixPointResult.cs" />

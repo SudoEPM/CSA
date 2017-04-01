@@ -9,6 +9,6 @@ namespace CSA.ProxyTree.Nodes.Statements
         {
         }
 
-        public override void Accept(IProxyVisitor visitor) => visitor.Apply((StatementNode) this);
+        public override void Accept(IProxyVisitor visitor) => visitor.Apply(this);
     }
 }

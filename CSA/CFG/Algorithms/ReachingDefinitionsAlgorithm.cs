@@ -122,7 +122,8 @@ namespace CSA.CFG.Algorithms
                 i--;
             }
             return a + b;
-        }
+        }
+
 
         public string Name => GetType().Name;
 

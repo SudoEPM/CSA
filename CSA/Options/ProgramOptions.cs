@@ -29,7 +29,7 @@ namespace CSA.Options
             HelpText = "Generate the package UML of the solution.")]
         public bool GeneratePackageUml { get; set; }
 
-        [Option("print-cfg", DefaultValue = false,
+        [Option("cfg", DefaultValue = false,
             HelpText = "Print the control flow graph of the solution.")]
         public bool PrintCfg { get; set; }
 
@@ -48,7 +48,15 @@ namespace CSA.Options
         [Option("lives", DefaultValue = false,
             HelpText = "Compute and print the lives variables of the solution.")]
         public bool ComputeLiveVariables { get; set; }
-        
+
+        [Option("cd", DefaultValue = false,
+            HelpText = "Compute and print the control depedencies of the solution.")]
+        public bool ComputeControlDepedencies { get; set; }
+
+        [Option("all", DefaultValue = false,
+            HelpText = "Launch all the algorithms on the solution.")]
+        public bool ComputeEverything { get; set; }
+
         [Option('p', "prec", DefaultValue = -1,
             HelpText = "Choose the precision of the package generation. (-1 for everything)")]
         public int PackageNesting { get; set; }
