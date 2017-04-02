@@ -10,7 +10,7 @@ namespace CSA.ProxyTree.Nodes
 {
     public class BasicProxyNode : IProxyNode
     {
-        protected SyntaxNode Origin { get; }
+        protected internal SyntaxNode Origin { get; }
 
         public IProxyNode Parent { get; set; }
 
@@ -43,6 +43,7 @@ namespace CSA.ProxyTree.Nodes
         }
 
         public string FileName => Origin.SyntaxTree.FilePath;
+        public string ToCode => Origin.ToFullString();
 
         public IEnumerable<IProxyNode> Ancestors()
         {

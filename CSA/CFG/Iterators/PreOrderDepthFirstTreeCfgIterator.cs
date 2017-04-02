@@ -31,6 +31,8 @@ namespace CSA.CFG.Iterators
                 {
                     // Find the current element
                     var current = _stack.Pop();
+                    if (_visited.Contains(current))
+                        continue;
 
                     // Find the next elements
                     foreach (var next in current.Next.Where(Accept))
@@ -39,8 +41,9 @@ namespace CSA.CFG.Iterators
                         yield return new CfgLink(current, next);
 
                         _stack.Push(next);
-                        _visited.Add(next);
                     }
+
+                    _visited.Add(current);
                 }
             }
         }

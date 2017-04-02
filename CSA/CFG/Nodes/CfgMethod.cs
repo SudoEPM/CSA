@@ -4,11 +4,11 @@ namespace CSA.CFG.Nodes
 {
     class CfgMethod
     {
-        private readonly ICallableNode _origin;
+        public ICallableNode Origin { get; }
 
         public CfgMethod(ICallableNode origin, CfgNode root, CfgNode exit)
         {
-            _origin = origin;
+            Origin = origin;
             Root = root;
             Exit = exit;
         }
@@ -16,6 +16,22 @@ namespace CSA.CFG.Nodes
         public CfgNode Root { get; private set; }
         public CfgNode Exit { get; private set; }
 
-        public string ClassSignature => _origin.Namespace + "." + _origin.ClassSignature;
+        public string ClassSignature => Origin.Namespace + "." + Origin.ClassSignature;
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as CfgMethod;
+            if (other != null)
+            {
+                return ClassSignature == other.ClassSignature;
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return ClassSignature.GetHashCode();
+        }
     }
 }

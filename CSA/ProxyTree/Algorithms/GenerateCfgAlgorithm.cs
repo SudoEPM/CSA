@@ -54,22 +54,25 @@ namespace CSA.ProxyTree.Algorithms
         {
             var root = node.Childs.OfType<StatementNode>().FirstOrDefault();
             var cfgRoot = root != null ? _cfgGraph.GetCfgNode(root) : null;
-            CfgNode cfgExit = null;
+            CfgNode exit = null;
             if (cfgRoot != null)
             {
                 var begin = new CfgNode("Entry");
+                _cfgGraph.CfgNodes[begin.UniqueId] = begin;
                 begin.Next.Add(cfgRoot);
-                cfgExit = new CfgNode("Exit");
-                cfgRoot.Next.Add(cfgExit);
+                exit = new CfgNode("Exit");
+                _cfgGraph.CfgNodes[exit.UniqueId] = exit;
+                cfgRoot.Next.Add(exit);
 
                 var system = new CfgNode("System");
+                _cfgGraph.CfgNodes[system.UniqueId] = system;
                 system.Next.Add(begin);
-                system.Next.Add(cfgExit);
+                system.Next.Add(exit);
 
                 cfgRoot = system;
             }
 
-            var method = new CfgMethod(node, cfgRoot, cfgExit);
+            var method = new CfgMethod(node, cfgRoot, exit);
             _cfgGraph.CfgMethods[node.Signature] = method;
             return method;
         }

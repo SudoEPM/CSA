@@ -66,5 +66,21 @@ namespace CSA.CFG.Nodes
 
         IEnumerable<IFixPointAnalyzableNode> IFixPointAnalyzableNode.Prec() => Prec;
         IEnumerable<IFixPointAnalyzableNode> IFixPointAnalyzableNode.Succ() => Next;
+
+        public override bool Equals(object obj)
+        {
+            CfgNode other = obj as CfgNode;
+            if (other != null)
+            {
+                return UniqueId == other.UniqueId;
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return UniqueId.GetHashCode();
+        }
     }
 }

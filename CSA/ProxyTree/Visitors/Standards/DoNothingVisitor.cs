@@ -15,6 +15,10 @@ namespace CSA.ProxyTree.Visitors.Standards
         {
         }
 
+        public virtual void Apply(FileNode node)
+        {
+        }
+
         public virtual void Apply(ClassNode node)
         {
         }

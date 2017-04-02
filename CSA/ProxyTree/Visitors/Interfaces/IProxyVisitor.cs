@@ -8,6 +8,7 @@ namespace CSA.ProxyTree.Visitors.Interfaces
     {
         void Apply(IProxyNode node);
         void Apply(ForestNode node);
+        void Apply(FileNode node);
         void Apply(ClassNode node);
         void Apply(MethodNode node);
         void Apply(PropertyNode node);

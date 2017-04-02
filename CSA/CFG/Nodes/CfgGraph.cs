@@ -7,9 +7,10 @@ namespace CSA.CFG.Nodes
     {
         private readonly Dictionary<StatementNode, CfgNode> _proxyToCfg;
 
-        public CfgGraph(Dictionary<string, CfgMethod> cfgMethods)
+        public CfgGraph()
         {
-            CfgMethods = cfgMethods;
+            CfgMethods = new Dictionary<string, CfgMethod>();
+            CfgNodes = new Dictionary<string, CfgNode>();
             _proxyToCfg = new Dictionary<StatementNode, CfgNode>();
         }
 
@@ -19,10 +20,12 @@ namespace CSA.CFG.Nodes
                 return _proxyToCfg[node];
 
             var cfgNode = new CfgNode(node);
+            CfgNodes[cfgNode.UniqueId] = cfgNode;
             _proxyToCfg[node] = cfgNode;
             return cfgNode;
         }
 
         public Dictionary<string, CfgMethod> CfgMethods { get; }
+        public Dictionary<string, CfgNode> CfgNodes { get; }
     }
 }

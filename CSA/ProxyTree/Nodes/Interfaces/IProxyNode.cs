@@ -13,6 +13,7 @@ namespace CSA.ProxyTree.Nodes.Interfaces
 
         string ClassSignature { get; set; }
         string FileName { get; }
+        string ToCode { get; }
 
         IEnumerable<IProxyNode> Ancestors();
         void Accept(IProxyVisitor visitor);

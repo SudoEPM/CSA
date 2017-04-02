@@ -35,7 +35,7 @@ namespace CSA.ProxyTree.Algorithms
             {
                 forest.AddRange(
                     proj.Documents/*.Where(x => x.Name.Contains("MetricCalc"))*/.Select(
-                        doc => doc.GetSyntaxTreeAsync().Result.GenerateProxy(doc.GetSemanticModelAsync().Result)));
+                        doc => doc.GetSyntaxTreeAsync().Result.GenerateProxy(doc.GetSemanticModelAsync().Result, doc)));
             }
             return new ForestNode(forest);
         }

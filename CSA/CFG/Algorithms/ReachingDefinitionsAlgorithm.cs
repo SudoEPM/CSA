@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -13,6 +12,8 @@ namespace CSA.CFG.Algorithms
         public ReachingDefinitions()
         {
             Values = new Dictionary<CfgNode, FixPointResult>();
+            DefinedVariables = new Dictionary<CfgMethod, HashSet<string>>();
+            VariablesReferences = new Dictionary<CfgMethod, Dictionary<string, HashSet<CfgNode>>>();
         }
 
         public FixPointResult this[CfgNode key]
@@ -27,7 +28,9 @@ namespace CSA.CFG.Algorithms
             }
         }
 
-        public Dictionary<CfgNode, FixPointResult> Values { get; private set; }
+        public Dictionary<CfgNode, FixPointResult> Values { get; }
+        public Dictionary<CfgMethod, HashSet<string>> DefinedVariables { get; }
+        public Dictionary<CfgMethod, Dictionary<string, HashSet<CfgNode>>> VariablesReferences { get; }
     }
 
     class ReachingDefinitionsFixPoint : FixPointAnalysis
@@ -97,31 +100,35 @@ namespace CSA.CFG.Algorithms
                 {
                     results[pair.Key as CfgNode] = pair.Value;
                 }
+
+                results.DefinedVariables[method.Value] = new HashSet<string>();
+                results.VariablesReferences[method.Value] = new Dictionary<string, HashSet<CfgNode>>();
+                foreach (var node in method.Value.Root.NodeEnumerator.Where(x => x.Origin != null))
+                {
+                    results.DefinedVariables[method.Value].UnionWith(node.Origin.VariablesDefined);
+                    foreach (var variable in node.Origin.VariablesDefined)
+                    {
+                        if (!results.VariablesReferences[method.Value].ContainsKey(variable))
+                        {
+                            results.VariablesReferences[method.Value][variable] = new HashSet<CfgNode>();
+                        }
+
+                        results.VariablesReferences[method.Value][variable].Add(node);
+                    }
+
+                    foreach (var variable in node.Origin.VariablesUsed)
+                    {
+                        if (!results.VariablesReferences[method.Value].ContainsKey(variable))
+                        {
+                            results.VariablesReferences[method.Value][variable] = new HashSet<CfgNode>();
+                        }
+
+                        results.VariablesReferences[method.Value][variable].Add(node);
+                    }
+                }
             }
 
             Program.Kernel.Bind<ReachingDefinitions>().ToConstant(results);
-        }
-
-        uint fib(uint n)
-        {
-            uint i = n - 1, a = 1, b = 0, c = 0, d = 1, t;
-            if (n <= 0)
-                return 0;
-            while (i > 0)
-            {
-                while (i % 2 == 0)
-                {
-                    t = d * (2 * c + d);
-                    c = c * c + d * d;
-                    d = t;
-                    i = i / 2;
-                }
-                t = d * (b + a) + c * b;
-                a = d * b + c * a;
-                b = t;
-                i--;
-            }
-            return a + b;
         }
 
 

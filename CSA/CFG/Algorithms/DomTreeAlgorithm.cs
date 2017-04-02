@@ -41,6 +41,7 @@ namespace CSA.CFG.Algorithms
             {
                 workList.Enqueue(node);
                 workSet.Add(node);
+                treeNodes.Add(node);
             }
 
             while (workList.Any())

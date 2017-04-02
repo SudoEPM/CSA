@@ -12,7 +12,9 @@ namespace CSA
         public static string LiveVariables => "LiveVariables";
         public static string DomTree => "DomTree";
         public static string PostDomTree => "PostDomTree";
-        public static string ControlDepedency => "ControlDepedency";
+        public static string ControlDepedencies => "ControlDepedencies";
+        public static string DataDepedencies => "DataDepedencies";
+        public static string ProgramDepedencies => "ProgramDepedencies";
     }
 
     public interface IProduceArtefactsAlgorithm : IAlgorithm

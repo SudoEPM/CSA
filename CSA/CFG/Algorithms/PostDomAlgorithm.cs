@@ -32,7 +32,6 @@ namespace CSA.CFG.Algorithms
             foreach (var link in treeEnumerator.LinkEnumerable)
             {
                 tree[link.From] = link.To;
-                treeNodes.Add(link.To);
             }
 
             var workList = new Queue<CfgNode>();
@@ -41,6 +40,7 @@ namespace CSA.CFG.Algorithms
             {
                 workList.Enqueue(node);
                 workSet.Add(node);
+                treeNodes.Add(node);
             }
 
             while (workList.Any())

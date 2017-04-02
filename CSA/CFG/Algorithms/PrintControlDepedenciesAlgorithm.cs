@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using CSA.CFG.Iterators;
 using CSA.CFG.Nodes;
 using CSA.Options;
 using DotBuilder;
@@ -11,13 +10,13 @@ using Ninject;
 
 namespace CSA.CFG.Algorithms
 {
-    class PrintControlDepedencyAlgorithm : IAlgorithm
+    class PrintControlDepedenciesAlgorithm : IAlgorithm
     {
         private readonly string _outputFolder;
         private readonly string _graphVizPath;
-        private ControlDepencies _controlsDepecencies;
+        private ControlDepedencies _controlsDepecencies;
 
-        public PrintControlDepedencyAlgorithm(ProgramOptions options)
+        public PrintControlDepedenciesAlgorithm(ProgramOptions options)
         {
             _outputFolder = "control-depedencies";
             Directory.CreateDirectory(_outputFolder);
@@ -28,7 +27,7 @@ namespace CSA.CFG.Algorithms
         public void Execute()
         {
             var cfg = Program.Kernel.Get<CfgGraph>("CFG");
-            _controlsDepecencies = Program.Kernel.Get<ControlDepencies>("ControlDepedency");
+            _controlsDepecencies = Program.Kernel.Get<ControlDepedencies>();
             var classGraphs = new Dictionary<string, GraphBase>();
 
             foreach (var method in cfg.CfgMethods.Where(x => x.Value.Root != null))
@@ -64,8 +63,6 @@ namespace CSA.CFG.Algorithms
                     fs.WriteLine(dotFile);
                 }
             }
-
-            System.Diagnostics.Process.Start(_outputFolder);
         }
 
         private void Execute(CfgMethod method, Subgraph subGraph)
@@ -92,6 +89,6 @@ namespace CSA.CFG.Algorithms
 
         public string Name => GetType().Name;
 
-        public IList<string> Depedencies => new List<string> { CSA.Artifacts.ControlDepedency };
+        public IList<string> Depedencies => new List<string> { CSA.Artifacts.ControlDepedencies };
     }
 }

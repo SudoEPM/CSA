@@ -103,7 +103,6 @@ namespace CSA.ProxyTree.Visitors
             graphviz.RenderGraph(_umlGraph, _output);
             _output.Flush();
             _output.Close();
-            System.Diagnostics.Process.Start(_output.Name);
         }
 
         public override void Apply(MethodNode node)

@@ -12,11 +12,13 @@ namespace CSA.RoslynWalkers
             writer.Visit(tree.GetRoot());
         }
 
-        public static IProxyNode GenerateProxy(this SyntaxTree tree, SemanticModel model)
+        public static IProxyNode GenerateProxy(this SyntaxTree tree, SemanticModel model, Document doc)
         {
             var writer = Program.Kernel.Get<ProxyTreeBuildWalker>();
             Program.Kernel.Bind<SemanticModel>().ToConstant(model);
+            Program.Kernel.Bind<Document>().ToConstant(doc);
             writer.Visit(tree.GetRoot());
+            Program.Kernel.Unbind<Document>();
             Program.Kernel.Unbind<SemanticModel>();
             return writer.Root;
         }

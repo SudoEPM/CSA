@@ -53,6 +53,18 @@ namespace CSA.Options
             HelpText = "Compute and print the control depedencies of the solution.")]
         public bool ComputeControlDepedencies { get; set; }
 
+        [Option("dd", DefaultValue = false,
+            HelpText = "Compute and print the data depedencies of the solution.")]
+        public bool ComputeDataDepedencies { get; set; }
+
+        [Option("pd", DefaultValue = false,
+            HelpText = "Compute and print the program depedencies of the solution.")]
+        public bool ComputeProgramDepedencies { get; set; }
+
+        [Option("slicing", DefaultValue = false,
+            HelpText = "Compute and print the slicing for each variable in the solution.")]
+        public bool ComputeSlicing { get; set; }
+
         [Option("all", DefaultValue = false,
             HelpText = "Launch all the algorithms on the solution.")]
         public bool ComputeEverything { get; set; }

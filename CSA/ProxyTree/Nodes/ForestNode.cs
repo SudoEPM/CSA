@@ -59,6 +59,14 @@ namespace CSA.ProxyTree.Nodes
             }
         }
 
+        public string ToCode
+        {
+            get
+            {
+                throw new InvalidOperationException("You can't!");
+            }
+        }
+
         public IEnumerable<IProxyNode> Ancestors() => Enumerable.Empty<IProxyNode>();
 
         public void Accept(IProxyVisitor visitor) => visitor.Apply(this);

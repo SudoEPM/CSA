@@ -22,6 +22,7 @@ namespace CSA.RoslynWalkers
         public ProxyTreeBuildWalker(Dictionary<SyntaxKind, Type> mapTypes)
         {
             _mapTypes = mapTypes;
+            _mapTypes[SyntaxKind.CompilationUnit] = typeof(FileNode);
             _mapTypes[SyntaxKind.MethodDeclaration] = typeof(MethodNode);
             _mapTypes[SyntaxKind.ConstructorDeclaration] = typeof(MethodNode);
             _mapTypes[SyntaxKind.AddAccessorDeclaration] = typeof(PropertyAccessorNode);

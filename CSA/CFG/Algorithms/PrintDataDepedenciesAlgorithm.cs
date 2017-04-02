@@ -10,14 +10,15 @@ using Ninject;
 
 namespace CSA.CFG.Algorithms
 {
-    class PrintCfgWithReachingDefsAlgorithm : IAlgorithm
+    class PrintDataDepedenciesAlgorithm : IAlgorithm
     {
         private readonly string _outputFolder;
         private readonly string _graphVizPath;
+        private DataDepedencies _dataDepecencies;
 
-        public PrintCfgWithReachingDefsAlgorithm(ProgramOptions options)
+        public PrintDataDepedenciesAlgorithm(ProgramOptions options)
         {
-            _outputFolder = "cfg-graph-reaching-defs";
+            _outputFolder = "data-depedencies";
             Directory.CreateDirectory(_outputFolder);
 
             _graphVizPath = options.GraphVizPath;
@@ -26,7 +27,7 @@ namespace CSA.CFG.Algorithms
         public void Execute()
         {
             var cfg = Program.Kernel.Get<CfgGraph>("CFG");
-            var reachingDefinitions = Program.Kernel.Get<ReachingDefinitions>();
+            _dataDepecencies = Program.Kernel.Get<DataDepedencies>();
             var classGraphs = new Dictionary<string, GraphBase>();
 
             foreach (var method in cfg.CfgMethods.Where(x => x.Value.Root != null))
@@ -44,7 +45,7 @@ namespace CSA.CFG.Algorithms
                 subGraph.Of(Label.With(method.Key));
                 graph.With(subGraph);
 
-                Execute(method.Value, subGraph, reachingDefinitions);
+                Execute(method.Value, subGraph);
             }
 
             var graphviz = new GraphViz(_graphVizPath, OutputFormat.Png);
@@ -64,19 +65,17 @@ namespace CSA.CFG.Algorithms
             }
         }
 
-        private void Execute(CfgMethod method, Subgraph subGraph, ReachingDefinitions reachingDefinitions)
+        private void Execute(CfgMethod method, Subgraph subGraph)
         {
-            foreach (var link in method.Root.LinkEnumerator)
+            foreach (var link in _dataDepecencies[method])
             {
-                var fromDefs = reachingDefinitions.Values.ContainsKey(link.From) ? reachingDefinitions[link.From] : null;
-                var from = Node.Name(link.From.UniqueId).Of(Label.With(link.From.ToDotString(fromDefs?.ToString())));
+                var from = Node.Name(link.From.UniqueId).Of(Label.With(link.From.ToDotString()));
                 if (link.From.Origin == null)
                 {
                     @from = @from.Of(Shape.Diamond);
                 }
 
-                var toDefs = reachingDefinitions.Values.ContainsKey(link.To) ? reachingDefinitions[link.To] : null;
-                var to = Node.Name(link.To.UniqueId).Of(Label.With(link.To.ToDotString(toDefs?.ToString())));
+                var to = Node.Name(link.To.UniqueId).Of(Label.With(link.To.ToDotString()));
                 if (link.To.Origin == null)
                 {
                     to = to.Of(Shape.Diamond);
@@ -90,6 +89,6 @@ namespace CSA.CFG.Algorithms
 
         public string Name => GetType().Name;
 
-        public IList<string> Depedencies => new List<string> { Artifacts.Cfg, Artifacts.ReachingDefinitions };
+        public IList<string> Depedencies => new List<string> { CSA.Artifacts.DataDepedencies };
     }
 }

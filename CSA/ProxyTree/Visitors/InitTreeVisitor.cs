@@ -56,6 +56,11 @@ namespace CSA.ProxyTree.Visitors
             // Nothing to do
         }
 
+        public override void Apply(FileNode node)
+        {
+            // Nothing to do
+        }
+
         public override void Apply(ClassNode node)
         {
             _currentClass = node;

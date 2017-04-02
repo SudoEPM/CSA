@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CSA.CFG.Iterators;
 using CSA.CFG.Nodes;
 using Ninject;
 
 namespace CSA.CFG.Algorithms
 {
-    class ControlDepencies
+    class ControlDepedencies
     {
-        public ControlDepencies()
+        public ControlDepedencies()
         {
             Graphs = new Dictionary<CfgMethod, HashSet<CfgLink>>();
         }
@@ -32,13 +29,13 @@ namespace CSA.CFG.Algorithms
         } 
     }
 
-    class ControlDepecencyAlgorithm : IProduceArtefactsAlgorithm
+    class ControlDepecenciesAlgorithm : IProduceArtefactsAlgorithm
     {
         public void Execute()
         {
             var domTrees = Program.Kernel.Get<ForestDomTree>("PDomTree");
 
-            var cd = Program.Kernel.Get<ControlDepencies>("ControlDepedency");
+            var cd = Program.Kernel.Get<ControlDepedencies>();
 
             foreach (var domTree in domTrees.Forest)
             {
@@ -57,13 +54,13 @@ namespace CSA.CFG.Algorithms
                     controlDepedencyLinks.Add(new CfgLink(link.From, node));
 
                     node = domTree[node];
-                } while (node != domTree[link.From]);
+                } while (!Equals(node, domTree[link.From]) && node != null);
             }
         }
 
         public string Name => GetType().Name;
 
-        public IList<string> Artifacts => new List<string> { CSA.Artifacts.ControlDepedency };
+        public IList<string> Artifacts => new List<string> { CSA.Artifacts.ControlDepedencies };
         public IList<string> Depedencies => new List<string>{ CSA.Artifacts.PostDomTree };
     }
 }

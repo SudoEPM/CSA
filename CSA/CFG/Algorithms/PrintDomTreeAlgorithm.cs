@@ -60,8 +60,6 @@ namespace CSA.CFG.Algorithms
                     fs.WriteLine(dotFile);
                 }
             }
-
-            System.Diagnostics.Process.Start(_outputFolder);
         }
 
         private void Execute(IDomTree tree, Subgraph subGraph)

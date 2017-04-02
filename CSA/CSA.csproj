@@ -119,12 +119,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CFG\Algorithms\ControlDepecencyAlgorithm.cs" />
+    <Compile Include="CFG\Algorithms\PrintProgramDepedenciesAlgorithm.cs" />
+    <Compile Include="CFG\Algorithms\ProgramDepecenciesAlgorithm.cs" />
+    <Compile Include="CFG\Algorithms\DataDepecenciesAlgorithm.cs" />
+    <Compile Include="CFG\Algorithms\ControlDepecenciesAlgorithm.cs" />
     <Compile Include="CFG\Algorithms\DomTreeAlgorithm.cs" />
     <Compile Include="CFG\Algorithms\PostDomAlgorithm.cs" />
     <Compile Include="CFG\Algorithms\LiveVariablesAlgorithm.cs" />
     <Compile Include="CFG\Algorithms\PrintCfgWithLiveVariablesAlgorithm.cs" />
-    <Compile Include="CFG\Algorithms\PrintControlDepedencyAlgorithm.cs" />
+    <Compile Include="CFG\Algorithms\PrintControlDepedenciesAlgorithm.cs" />
+    <Compile Include="CFG\Algorithms\PrintDataDepedenciesAlgorithm.cs" />
     <Compile Include="CFG\Algorithms\PrintDomTreeAlgorithm.cs" />
     <Compile Include="CFG\Algorithms\PrintPostDomTreeAlgorithm.cs" />
     <Compile Include="CFG\Nodes\DomTree.cs" />
@@ -155,8 +159,10 @@
     <Compile Include="ProxyTree\Algorithms\MetricCalculatorAlgorithm.cs" />
     <Compile Include="ProxyTree\Algorithms\ParseProjectAlgorithm.cs" />
     <Compile Include="ProxyTree\Algorithms\PrintTreeAlgorithm.cs" />
+    <Compile Include="CFG\Algorithms\SlicingAlgorithm.cs" />
     <Compile Include="ProxyTree\Algorithms\UmlClassGeneratorAlgorithm.cs" />
     <Compile Include="ProxyTree\Algorithms\UmlPackageGeneratorAlgorithm.cs" />
+    <Compile Include="ProxyTree\Nodes\FileNode.cs" />
     <Compile Include="ProxyTree\Nodes\Statements\IfElseStatementNode.cs" />
     <Compile Include="ProxyTree\Nodes\Statements\BlockStatementNode.cs" />
     <Compile Include="ProxyTree\Nodes\Statements\BreakStatementNode.cs" />

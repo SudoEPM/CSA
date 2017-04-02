@@ -34,7 +34,10 @@ namespace CSA.Options
             if (_options.ComputeEverything || _options.ComputePostDominators) Bind<IAlgorithm>().To<PrintPostDomTreeAlgorithm>();
             if (_options.ComputeEverything || _options.ComputeReachingDefinitions) Bind<IAlgorithm>().To<PrintCfgWithReachingDefsAlgorithm>();
             if (_options.ComputeEverything || _options.ComputeLiveVariables) Bind<IAlgorithm>().To<PrintCfgWithLiveVariablesAlgorithm>();
-            if (_options.ComputeEverything || _options.ComputeControlDepedencies) Bind<IAlgorithm>().To<PrintControlDepedencyAlgorithm>();
+            if (_options.ComputeEverything || _options.ComputeControlDepedencies) Bind<IAlgorithm>().To<PrintControlDepedenciesAlgorithm>();
+            if (_options.ComputeEverything || _options.ComputeDataDepedencies) Bind<IAlgorithm>().To<PrintDataDepedenciesAlgorithm>();
+            if (_options.ComputeEverything || _options.ComputeProgramDepedencies) Bind<IAlgorithm>().To<PrintProgramDepedenciesAlgorithm>();
+            if (_options.ComputeEverything || _options.ComputeSlicing) Bind<IAlgorithm>().To<SlicingAlgorithm>();
 
             //Bind<TextWriter>().ToConstant(Console.Out).Named("Generic");
             Bind<TextWriter>().ToConstant(new StreamWriter("generic.txt")).Named("Generic");
@@ -48,7 +51,9 @@ namespace CSA.Options
             Bind<CfgGraph>().To<CfgGraph>().InSingletonScope().Named("CFG");
             Bind<ForestDomTree>().To<ForestDomTree>().InSingletonScope().Named("DomTree");
             Bind<ForestDomTree>().To<ForestDomTree>().InSingletonScope().Named("PDomTree");
-            Bind<ControlDepencies>().To<ControlDepencies>().InSingletonScope().Named("ControlDepedency");
+            Bind<ControlDepedencies>().To<ControlDepedencies>().InSingletonScope();
+            Bind<DataDepedencies>().To<DataDepedencies>().InSingletonScope();
+            Bind<ProgramDepedencies>().To<ProgramDepedencies>().InSingletonScope();
         }
     }
 }
