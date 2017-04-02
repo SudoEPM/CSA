@@ -23,7 +23,7 @@ namespace CSA.CFG.Nodes
             var other = obj as CfgMethod;
             if (other != null)
             {
-                return ClassSignature == other.ClassSignature;
+                return Origin.Signature == other.Origin.Signature;
             }
 
             return false;
@@ -31,7 +31,7 @@ namespace CSA.CFG.Nodes
 
         public override int GetHashCode()
         {
-            return ClassSignature.GetHashCode();
+            return Origin.GetHashCode();
         }
     }
 }
