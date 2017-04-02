@@ -57,7 +57,7 @@ namespace CSA.CFG.Algorithms
         {
             foreach (var definition in definitions)
             {
-                foreach (var def in definition.Value.Out)
+                foreach (var def in definition.Value.In)
                 {
                     if (definition.Key.Origin == null)
                         continue;

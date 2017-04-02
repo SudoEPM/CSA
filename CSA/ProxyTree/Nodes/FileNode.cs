@@ -47,6 +47,7 @@ namespace CSA.ProxyTree.Nodes
                 if (node is ElseClauseSyntax 
                     || node is SwitchSectionSyntax
                     || node is CatchClauseSyntax
+                    || node is FinallyClauseSyntax
                     || node.Parent is BlockSyntax)
                 {
                     editor.RemoveNode(node);

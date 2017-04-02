@@ -8,6 +8,7 @@ using CSA.Options;
 using CSA.ProxyTree.Iterators;
 using CSA.ProxyTree.Nodes;
 using CSA.ProxyTree.Nodes.Interfaces;
+using CSA.ProxyTree.Nodes.Statements;
 using Ninject;
 
 namespace CSA.CFG.Algorithms
@@ -58,53 +59,82 @@ namespace CSA.CFG.Algorithms
                 {
                     if (methods.Contains(method.Key.Origin) && method.Value.Any() && method.Key.Root != null)
                     {
-                        var sanitized = string.Join("_", method.Key.Origin.Signature.Split(Path.GetInvalidFileNameChars()));
-                        var end = sanitized.IndexOf('(');
-                        if (end == -1)
+                        try
                         {
-                            end = sanitized.LastIndexOf('.');
-                            end = sanitized.Substring(0, end - 1).LastIndexOf('.');
-                            sanitized = sanitized.Substring(end + 1);
-                        }
-                        else
-                        {
-                            sanitized = sanitized.Substring(sanitized.Substring(0, end).LastIndexOf('.') + 1);
-                        }
-
-                        var methodPath = $"{path}/{sanitized}";
-                        if(methodPath.Length >= 247)
-                            continue; // Abort
-
-                        bool directoryCreated = false;
-
-                        foreach (var variable in method.Value)
-                        {
-                            var startPoint = _reachingDefinitions.VariablesReferences[method.Key][variable].ToImmutableHashSet();
-                            if(startPoint.IsEmpty)
-                                continue;
-
-                            // Just for demo: Filter out for on output only 
-                            var filtered = startPoint.Where(x => x.Origin.ToCode.Contains("Console.WriteLine(")).ToImmutableHashSet();
-
-                            if (!filtered.IsEmpty)
+                            var sanitized = string.Join("_", method.Key.Origin.Signature.Split(Path.GetInvalidFileNameChars()));
+                            var end = sanitized.IndexOf('(');
+                            if (end == -1)
                             {
-                                startPoint = filtered;
+                                end = sanitized.LastIndexOf('.');
+                                end = sanitized.Substring(0, end - 1).LastIndexOf('.');
+                                sanitized = sanitized.Substring(end + 1);
+                            }
+                            else
+                            {
+                                sanitized = sanitized.Substring(sanitized.Substring(0, end).LastIndexOf('.') + 1);
                             }
 
-                            var outputFile = methodPath + "/" + variable + ".cs";
-                            if (outputFile.Length >= 259)
+                            var methodPath = $"{path}/{sanitized}";
+                            if (methodPath.Length >= 247)
                                 continue; // Abort
 
-                            if (!directoryCreated)
+                            bool directoryCreated = false;
+
+                            // Slice by return
+                            foreach (var node in method.Key.Root.NodeEnumerator.Where(x => x.Origin is ReturnStatementNode))
                             {
-                                directoryCreated = true;
-                                Directory.CreateDirectory(methodPath);
+                                var outputFile = methodPath + "/" + node.UniqueId + ".cs";
+                                if (outputFile.Length >= 259)
+                                    continue; // Abort
+
+                                if (!directoryCreated)
+                                {
+                                    directoryCreated = true;
+                                    Directory.CreateDirectory(methodPath);
+                                }
+
+                                using (TextWriter fs = new StreamWriter(outputFile))
+                                {
+                                    fs.WriteLine(Slice(method.Key, new List<CfgNode> { node }));
+                                }
                             }
-                            
-                            using (TextWriter fs = new StreamWriter(outputFile))
+
+                            continue;
+                            // Slice by variable
+                            foreach (var variable in method.Value)
                             {
-                                fs.WriteLine(Slice(method.Key, startPoint));
+                                var startPoint = _reachingDefinitions.VariablesReferences[method.Key][variable].ToImmutableHashSet();
+                                if (startPoint.IsEmpty)
+                                    continue;
+
+                                // Just for demo: Filter out for on output only 
+                                var filtered = startPoint.Where(x => x.Origin.ToCode.Contains("Console.WriteLine(")).ToImmutableHashSet();
+
+                                if (!filtered.IsEmpty)
+                                {
+                                    startPoint = filtered;
+                                }
+
+                                var outputFile = methodPath + "/" + variable + ".cs";
+                                if (outputFile.Length >= 259)
+                                    continue; // Abort
+
+                                if (!directoryCreated)
+                                {
+                                    directoryCreated = true;
+                                    Directory.CreateDirectory(methodPath);
+                                }
+
+                                using (TextWriter fs = new StreamWriter(outputFile))
+                                {
+                                    fs.WriteLine(Slice(method.Key, startPoint));
+                                }
                             }
+                        }
+                        catch (Exception)
+                        {
+                            // We did our best, just give up
+                            continue;
                         }
                     }
                 }
