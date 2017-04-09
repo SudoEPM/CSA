@@ -45,7 +45,7 @@ namespace CSA.Options
             //Bind<TextWriter>().ToConstant(Console.Out).Named("Metric");
             if (_options.ComputeEverything || _options.ComputeMetrics) Bind<TextWriter>().ToConstant(new StreamWriter("metric.json")).Named("Metric");
             if (_options.ComputeEverything || _options.GenerateClassUml) Bind<FileStream>().ToConstant(new FileStream("uml-class.png", FileMode.Create)).Named("UML-CLASS");
-            if (_options.ComputeEverything || _options.GenerateClassUml) Bind<FileStream>().ToConstant(new FileStream("uml-package.png", FileMode.Create)).Named("UML-PACKAGE");
+            if (_options.ComputeEverything || _options.GeneratePackageUml) Bind<FileStream>().ToConstant(new FileStream("uml-package.png", FileMode.Create)).Named("UML-PACKAGE");
 
             Bind<IDictionary<string, ClassNode>>().To<Dictionary<string, ClassNode>>().InSingletonScope().Named("ClassMapping");
             Bind<CfgGraph>().To<CfgGraph>().InSingletonScope().Named("CFG");
