@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using CSA.CFG.Nodes;
 using CSA.Options;
 using DotBuilder;
@@ -64,7 +65,7 @@ namespace CSA.CFG.Algorithms
 
         private void Execute(IDomTree tree, Subgraph subGraph)
         {
-            foreach (var domLink in tree.DomParent)
+            foreach (var domLink in tree.DomParent.Where(x => x.Value != null))
             {
                 var child = domLink.Key;
                 var parent = domLink.Value;
